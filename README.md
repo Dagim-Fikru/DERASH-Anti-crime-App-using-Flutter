@@ -7,6 +7,7 @@ This anti-crime application is developed by 5 enthusiastic software engineering 
 ### 5.Dagim Fikru        UGR/4328/12
 
 #Description
+
 ### Our project is primarily concerned with criminal cases.
 ### As we all know, there are numerous issues concerning this topic in our country.Normally, no one answers the phone at the police station.Or it  isn't working properly.As a direct consequence, crimes do not receive a resolution.
 ### Email is the most commonly used connection method in our project. Because email is the creedable one.As a result, if a person exposed to a crime or sees one, he or she can report it using our application, which allows them to respond quickly And there will be no information lag.
