@@ -23,7 +23,9 @@
 
 # Business Features
 
-### - Users can upload red-handed crime image in addition to the descriptive report of the crime which make the justice system easyily and precisily.
-### - Since the report sent to the police station saved on user's account which makes the police officers accountable even if they ignore the report.
-### - the admin can see crime prone areas since the app provide the statics of the most reported areas.
+### - Crime report with or without image 
+
+### - Saved user report history
+
+### - Crime prone statics provider adimin
 
