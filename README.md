@@ -18,9 +18,11 @@
 
 ### - Role based authorization 
 ### - User login/signup authentication
+### - Admin can add and delete new location of the police stations(CRUD)
 
 # Business Features
 
-### - Users can upload redhanded crime image which make the justice system easyily and precisily.
-### - Since the report send to the police station and save on user's account which makes the police officers accountable if they ignore the report.
+### - Users can upload red-handed crime image in addition to the descriptive report of the crime which make the justice system easyily and precisily.
+### - Since the report sent to the police station saved on user's account which makes the police officers accountable even if they ignore the report.
+### - the admin can see crime prone areas since the app provide the statics of the most reported areas.
 
