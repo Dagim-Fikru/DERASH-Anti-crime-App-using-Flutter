@@ -12,3 +12,15 @@
 ### As we all know, there are numerous issues concerning this topic in our country.Normally, no one answers the phone at the police station.Or it  isn't working properly.As a direct consequence, crimes do not receive a resolution.
 ### Email is the most commonly used connection method in our project. Because email is the creedable one.As a result, if a person exposed to a crime or sees one, he or she can report it using our application, which allows them to respond quickly And there will be no information lag.
 ### Furthermore, crimes can be easily fixed because police officers will arrive to the crime scene on time and collect evidence.Even if transparency and accountability are demonstrated because the email notification is visible to the police officers.
+
+
+# Authentication/Authorization Feature
+
+### Role based authorization 
+### user login/signup authentication
+
+# Business Features
+
+### users can upload redhanded crime image which make the justice system easy and precise.
+### since the report send to the police station and save on user's account which makes the police officers accountable if they ignore the report.
+
