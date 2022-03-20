@@ -18,7 +18,7 @@
 
 ### - Role based authorization 
 ### - User login/signup authentication
-### - User can change his/her user name and even can delete the account
+### - User can change his/her user name and even can delete his/her account
 ### - Admin can add and delete new location of the police stations(CRUD)
 
 # Business Features
