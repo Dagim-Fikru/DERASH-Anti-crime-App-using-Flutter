@@ -21,6 +21,6 @@
 
 # Business Features
 
-### - Users can upload redhanded crime image which make the justice system easy and precise.
+### - Users can upload redhanded crime image which make the justice system easyily and precisily.
 ### - Since the report send to the police station and save on user's account which makes the police officers accountable if they ignore the report.
 
