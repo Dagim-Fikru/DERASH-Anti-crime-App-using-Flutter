@@ -1,8 +1,13 @@
 // ignore_for_file: file_names, prefer_const_constructors, camel_case_types
 import 'package:flutter/material.dart';
-class repotPage extends StatelessWidget {
+class repotPage extends StatefulWidget {
   const repotPage({Key? key}) : super(key: key);
 
+  @override
+  State<repotPage> createState() => _repotPageState();
+}
+
+class _repotPageState extends State<repotPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
