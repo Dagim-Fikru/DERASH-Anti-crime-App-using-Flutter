@@ -1,6 +1,8 @@
 // ignore_for_file: file_names, prefer_const_constructors, camel_case_types, unused_field, unused_element, prefer_const_literals_to_create_immutables, deprecated_member_use, body_might_complete_normally_nullable, curly_braces_in_flow_control_structures, avoid_print, avoid_unnecessary_containers, dead_code, unused_local_variable
 import 'package:flutter/material.dart';
 
+import 'drawerTop.dart';
+
 class repotPage extends StatefulWidget {
   const repotPage({Key? key}) : super(key: key);
 
@@ -12,10 +14,11 @@ class _repotPageState extends State<repotPage> {
   late String _location;
   late String _date;
   late String _incident;
-  late String _file;
+  // late String _file;
 
+  var currentPage = drawerMenus.help;
   final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
-  DateTime dateTime = DateTime(2014, 9, 13, 5, 30);
+  DateTime dateTime = DateTime(2022, 05, 24);
 
   Widget _buildLocationField() {
     List<String> locations = ['4kilo', 'Bole', 'Piassa', '5kilo', 'Megenagna'];
@@ -138,6 +141,7 @@ class _repotPageState extends State<repotPage> {
               // _buildFileUpload(),
               SizedBox(height: 100),
               RaisedButton(
+                color: Color.fromARGB(255, 0, 0, 0),
                 onPressed: () {
                   if (!_formkey.currentState!.validate()) {
                     return;
@@ -148,7 +152,7 @@ class _repotPageState extends State<repotPage> {
                 child: Text(
                   'Submit',
                   style: TextStyle(
-                      color: Color.fromARGB(255, 0, 0, 0),
+                      color: Color.fromARGB(255, 82, 190, 236),
                       fontSize: 16,
                       fontStyle: FontStyle.italic,
                       fontWeight: FontWeight.bold),
@@ -158,6 +162,80 @@ class _repotPageState extends State<repotPage> {
           ),
         ),
       ),
+      drawer: Drawer(
+        child: SingleChildScrollView(
+          child: Container(
+            child: Column(
+              children: [
+                drawerTop(),
+                drawerMenu(),
+              ],
+            ),
+          ),
+        ),
+      ),
     );
   }
+
+  Widget drawerMenu() {
+    return Container(
+      padding: EdgeInsets.only(top: 15),
+      child: Column(
+        // list of menus
+        children: [
+          menus(1, "Help", Icons.help_center,
+              currentPage == drawerMenus.help ? true : false),
+          menus(2, "Logout", Icons.logout,
+              currentPage == drawerMenus.logout ? true : false),
+        ],
+      ),
+    );
+  }
+
+  Widget menus(int id, String title, IconData icon, bool selected) {
+    return Material(
+      color: selected ? Colors.grey[300] : Colors.transparent,
+      child: InkWell(
+        onTap: () {
+          Navigator.pop(context);
+          setState(() {
+            if (id == 1) {
+              currentPage == drawerMenus.help;
+            } else if (id == 2) {
+              currentPage == drawerMenus.logout;
+            }
+          });
+        },
+        child: Padding(
+          padding: EdgeInsets.all(15.0),
+          child: Row(
+            children: [
+              Expanded(
+                child: Icon(
+                  icon,
+                  size: 20,
+                  color: Colors.black,
+                ),
+              ),
+              Expanded(
+                flex: 3,
+                child: Text(
+                  title,
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 16,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+enum drawerMenus {
+  help,
+  logout,
 }
