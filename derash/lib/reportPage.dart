@@ -1,7 +1,10 @@
-// ignore_for_file: file_names, prefer_const_constructors, camel_case_types, unused_field, unused_element, prefer_const_literals_to_create_immutables, deprecated_member_use, body_might_complete_normally_nullable, curly_braces_in_flow_control_structures, avoid_print, avoid_unnecessary_containers, dead_code, unused_local_variable
+// ignore_for_file: file_names, prefer_const_constructors, camel_case_types, unused_field, unused_element, prefer_const_literals_to_create_immutables, deprecated_member_use, body_might_complete_normally_nullable, curly_braces_in_flow_control_structures, avoid_print, avoid_unnecessary_containers, dead_code, unused_local_variable, prefer_typing_uninitialized_variables, unused_import
+import 'dart:html';
+
 import 'package:flutter/material.dart';
 
 import 'drawerTop.dart';
+import 'package:image_picker/image_picker.dart';
 
 class repotPage extends StatefulWidget {
   const repotPage({Key? key}) : super(key: key);
@@ -14,7 +17,20 @@ class _repotPageState extends State<repotPage> {
   late String _location;
   late String _date;
   late String _incident;
-  // late String _file;
+  late File _photo;
+
+  Future getImage(bool isCamera) async {
+    File image;
+    if (isCamera) {
+      image = (await ImagePicker.pickImage(source: ImageSource.camera)) as File;
+    } else {
+      image =
+          (await ImagePicker.pickImage(source: ImageSource.gallery)) as File;
+    }
+    setState(() {
+      _photo = image;
+    });
+  }
 
   var currentPage = drawerMenus.help;
   final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
@@ -34,7 +50,7 @@ class _repotPageState extends State<repotPage> {
       )),
       dropdownColor: Color.fromARGB(255, 153, 146, 245),
       value: selectedLocation,
-      icon: Icon(Icons.arrow_circle_down_sharp),
+      icon: Icon(Icons.arrow_downward),
       items: locations
           .map((location) => DropdownMenuItem<String>(
                 value: location,
@@ -114,9 +130,56 @@ class _repotPageState extends State<repotPage> {
     );
   }
 
-  // Widget _buildFileUpload() {
-  //   return null;
-  // }
+  Widget _buildFileUpload() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        Column(
+          children: [
+            Text(
+              'Add Photo',
+              style: TextStyle(
+                  color: Color.fromARGB(255, 102, 32, 32),
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18,
+                  fontStyle: FontStyle.italic),
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                IconButton(
+                  onPressed: () {
+                    getImage(true);
+                  },
+                  icon: Icon(
+                    Icons.camera_alt_rounded,
+                    size: 30,
+                    color: Color.fromARGB(255, 97, 27, 27),
+                  ),
+                ),
+                SizedBox(
+                  width: 30,
+                ),
+                IconButton(
+                  onPressed: () {
+                    getImage(false);
+                  },
+                  icon: Icon(
+                    Icons.insert_drive_file_rounded,
+                    size: 30,
+                    color: Color.fromARGB(255, 97, 27, 27),
+                  ),
+                ),
+              ],
+            )
+          ],
+        ),
+      ],
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -135,11 +198,10 @@ class _repotPageState extends State<repotPage> {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: <Widget>[
               _buildLocationField(),
-
               _buildDateField(),
+              _buildFileUpload(),
               _buildIncidentField(),
-              // _buildFileUpload(),
-              SizedBox(height: 100),
+              // SizedBox(height: 50),
               RaisedButton(
                 color: Color.fromARGB(255, 0, 0, 0),
                 onPressed: () {
@@ -183,18 +245,16 @@ class _repotPageState extends State<repotPage> {
       child: Column(
         // list of menus
         children: [
-          menus(1, "Help", Icons.help_center,
-              currentPage == drawerMenus.help ? true : false),
-          menus(2, "Logout", Icons.logout,
-              currentPage == drawerMenus.logout ? true : false),
+          menus(1, "Help", Icons.help_center),
+          menus(2, "Logout", Icons.logout),
         ],
       ),
     );
   }
 
-  Widget menus(int id, String title, IconData icon, bool selected) {
+  Widget menus(int id, String title, IconData icon) {
     return Material(
-      color: selected ? Colors.grey[300] : Colors.transparent,
+      // color: selected ? Colors.grey[300] : Colors.transparent,
       child: InkWell(
         onTap: () {
           Navigator.pop(context);
