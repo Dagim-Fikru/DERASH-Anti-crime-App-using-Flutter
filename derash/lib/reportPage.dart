@@ -24,7 +24,7 @@ class _repotPageState extends State<repotPage> {
       if (image == null) return;
       final imageTemp = File(image.name);
       // print(image.name);
-      this.image = imageTemp;
+      setState(() => this.image = imageTemp);
     } on PlatformException catch (e) {
       print('Failed to select an image: $e');
     }
@@ -184,6 +184,13 @@ class _repotPageState extends State<repotPage> {
                     color: Color.fromARGB(255, 241, 213, 213),
                   ),
                 ),
+                // SizedBox(
+                //   width: 40,
+                // ),
+                // image != null
+                //     ? Image.file(image!,
+                //         width: 100, height: 160, fit: BoxFit.cover)
+                //     : FlutterLogo(size: 100),
               ],
             )
           ],
