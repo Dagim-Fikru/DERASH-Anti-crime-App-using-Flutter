@@ -1,8 +1,8 @@
 // ignore_for_file: file_names, prefer_const_constructors, camel_case_types, unused_field, unused_element, prefer_const_literals_to_create_immutables, deprecated_member_use, body_might_complete_normally_nullable, curly_braces_in_flow_control_structures, avoid_print, avoid_unnecessary_containers, dead_code, unused_local_variable, prefer_typing_uninitialized_variables, unused_import, avoid_web_libraries_in_flutter
-import 'dart:developer';
-import 'dart:html';
+import 'dart:io';
 import 'package:derash/main.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import 'package:image_picker/image_picker.dart';
 
@@ -17,20 +17,18 @@ class _repotPageState extends State<repotPage> {
   late String _location;
   late String _date;
   late String _incident;
-  late File _photo;
-
-  // Future getImage(bool isCamera) async {
-  //   File image;
-  //   if (isCamera) {
-  //     image = (await ImagePicker.pickImage(source: ImageSource.camera)) as File;
-  //   } else {
-  //     image =
-  //         (await ImagePicker.pickImage(source: ImageSource.gallery)) as File;
-  //   }
-  //   setState(() {
-  //     _photo = image;
-  //   });
-  // }
+  File? image;
+  Future pickImage(ImageSource source) async {
+    try {
+      final image = await ImagePicker().pickImage(source: source);
+      if (image == null) return;
+      final imageTemp = File(image.name);
+      // print(image.name);
+      this.image = imageTemp;
+    } on PlatformException catch (e) {
+      print('Failed to select an image: $e');
+    }
+  }
 
   final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
   DateTime dateTime = DateTime(2022, 05, 27);
@@ -168,9 +166,7 @@ class _repotPageState extends State<repotPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 IconButton(
-                  onPressed: () {
-                    // getImage(true);
-                  },
+                  onPressed: () => pickImage(ImageSource.camera),
                   icon: Icon(
                     Icons.camera_alt_rounded,
                     size: 30,
@@ -181,9 +177,7 @@ class _repotPageState extends State<repotPage> {
                   width: 30,
                 ),
                 IconButton(
-                  onPressed: () {
-                    // getImage(false);
-                  },
+                  onPressed: () => pickImage(ImageSource.gallery),
                   icon: Icon(
                     Icons.insert_drive_file_rounded,
                     size: 30,
