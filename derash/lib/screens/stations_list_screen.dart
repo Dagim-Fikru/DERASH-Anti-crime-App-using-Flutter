@@ -46,7 +46,7 @@ class StationListScreen extends StatelessWidget {
                   ),
                 ),
                 onDismissed: (direction) {
-                  manager.deleteStation(index);
+                  manager.deleteItem(index);
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
                       content: Text('${item.location} dismissed'),
@@ -64,7 +64,7 @@ class StationListScreen extends StatelessWidget {
                     },
                   ),
                   onTap: () {
-                    manager.stationTapped(index);
+                    manager.itemTapped(index);
                   },
                 ),
               );
@@ -80,7 +80,7 @@ class StationListScreen extends StatelessWidget {
             Icons.add,
           ),
           onPressed: () {
-            manager.createNewStation();
+            manager.createNewItem();
           }),
     );
   }

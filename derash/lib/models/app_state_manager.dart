@@ -2,7 +2,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 class AppStateManager extends ChangeNotifier {
-  bool _loggedIn = false;
+  bool _loggedIn = true;
+  bool _isAdmin = true;
 
   bool get isLoggedIn => _loggedIn;
 

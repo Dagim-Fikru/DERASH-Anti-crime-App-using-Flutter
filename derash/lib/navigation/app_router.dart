@@ -1,92 +1,82 @@
+import 'package:derash/models/profile_manger.dart';
+import 'package:derash/screens/admin_screen.dart';
+import 'package:derash/screens/profile_screen.dart';
 import 'package:flutter/material.dart';
 import '../models/app_state_manager.dart';
 
 import '../models/drash_pages.dart';
 import '../models/station_manger.dart';
 import '../screens/edit_station.dart';
-import '../screens/no_station_screen.dart';
+
 import '../screens/stations_list_screen.dart';
 
-// 1
 class AppRouter extends RouterDelegate
     with ChangeNotifier, PopNavigatorRouterDelegateMixin {
-// 2
   @override
   final GlobalKey<NavigatorState> navigatorKey;
-// 3
   final AppStateManager appStateManager;
-// 4
-  final StationManager stationManger;
-// 5
+  final StationManager stationManager;
+  final ProfileManager profileManager;
 
   AppRouter({
     required this.appStateManager,
-    required this.stationManger,
+    required this.stationManager,
+    required this.profileManager,
   }) : navigatorKey = GlobalKey<NavigatorState>() {
     appStateManager.addListener(notifyListeners);
-    stationManger.addListener(notifyListeners);
+    stationManager.addListener(notifyListeners);
+    profileManager.addListener(notifyListeners);
   }
 
   @override
   void dispose() {
     appStateManager.removeListener(notifyListeners);
-    stationManger.removeListener(notifyListeners);
-
+    stationManager.removeListener(notifyListeners);
+    profileManager.removeListener(notifyListeners);
     super.dispose();
   }
 
-// 6
   @override
   Widget build(BuildContext context) {
-// 7
     return Navigator(
-// 8
       key: navigatorKey,
       onPopPage: _handlePopPage,
-// 9
       pages: [
-        if (stationManger.stations.length > 0)
-          StationListScreen.page(stationManger),
-        if (stationManger.stations.length == 0 &&
-            !stationManger.isCreatingNewItem)
-          EmptyStationsScreen.page(),
-        if (stationManger.isCreatingNewItem)
+        if (appStateManager.isLoggedIn)
+          AdminScreen.page(
+              stationManager.selectedTab, stationManager, profileManager),
+        if (profileManager.selectedIndex != -1)
+          ProfileScreen.page(
+              profileManager.users[profileManager.selectedIndex]),
+        if (stationManager.isCreatingNewItem)
           EditStationScreen.page(
               onCreate: (item) {
-                stationManger.addStation(item);
+                stationManager.addItem(item);
               },
               onUpdate: (item, index) {}),
-        if (stationManger.selectedIndex != -1)
+        if (stationManager.selectedIndex != -1)
           EditStationScreen.page(
-              item: stationManger.stations[stationManger.selectedIndex],
-              index: stationManger.selectedIndex,
+              item: stationManager.stations[stationManager.selectedIndex],
+              index: stationManager.selectedIndex,
               onCreate: (item) {},
               onUpdate: (item, index) {
-                stationManger.updateStation(item, index);
+                stationManager.updateItem(item, index);
               }),
       ],
     );
   }
 
-  bool _handlePopPage(
-// 1
-      Route<dynamic> route,
-// 2
-      result) {
-// 3
+  bool _handlePopPage(Route<dynamic> route, result) {
     if (!route.didPop(result)) {
-// 4
       return false;
     }
     if (route.settings.name == DerashPages.editstationPath) {
-      stationManger.stationTapped(-1);
+      stationManager.itemTapped(-1);
     }
-// 5
 
     return true;
   }
 
-// 10
   @override
   Future<void> setNewRoutePath(configuration) async => null;
 }

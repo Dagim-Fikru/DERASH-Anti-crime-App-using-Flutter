@@ -1,3 +1,4 @@
+import 'package:derash/models/profile_manger.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -21,7 +22,7 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   final _stationManger = StationManager();
-
+  final _profileMangaer = ProfileManager();
   final _appStateManager = AppStateManager();
   late AppRouter _appRouter;
 
@@ -29,7 +30,8 @@ class _MyAppState extends State<MyApp> {
   void initState() {
     _appRouter = AppRouter(
       appStateManager: _appStateManager,
-      stationManger: _stationManger,
+      stationManager: _stationManger,
+      profileManager: _profileMangaer,
     );
     super.initState();
   }
@@ -43,6 +45,9 @@ class _MyAppState extends State<MyApp> {
         ),
         ChangeNotifierProvider(
           create: (context) => _appStateManager,
+        ),
+        ChangeNotifierProvider(
+          create: (context) => _profileMangaer,
         )
       ],
       child: Consumer<AppStateManager>(
