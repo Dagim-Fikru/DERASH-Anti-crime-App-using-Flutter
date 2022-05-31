@@ -1,5 +1,6 @@
 // ignore_for_file: file_names, prefer_const_constructors, camel_case_types, unused_field, unused_element, prefer_const_literals_to_create_immutables, deprecated_member_use, body_might_complete_normally_nullable, curly_braces_in_flow_control_structures, avoid_print, avoid_unnecessary_containers, dead_code, unused_local_variable, prefer_typing_uninitialized_variables, unused_import, avoid_web_libraries_in_flutter
 import 'dart:io';
+import 'package:derash/history.dart';
 import 'package:derash/main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -55,7 +56,7 @@ class _repotPageState extends State<repotPage> {
               fontSize: 20,
             ),
           )),
-      dropdownColor: Color.fromARGB(255, 153, 146, 245),
+      dropdownColor: Color.fromARGB(255, 43, 171, 200),
       value: selectedLocation,
       icon: Icon(
         Icons.arrow_downward,
@@ -184,13 +185,16 @@ class _repotPageState extends State<repotPage> {
                     color: Color.fromARGB(255, 241, 213, 213),
                   ),
                 ),
-                // SizedBox(
-                //   width: 40,
-                // ),
-                // image != null
-                //     ? Image.file(image!,
-                //         width: 100, height: 160, fit: BoxFit.cover)
-                //     : FlutterLogo(size: 100),
+                SizedBox(
+                  width: 40,
+                ),
+                image != null
+                    ? Image.file(image!,
+                        width: 50, height: 50, fit: BoxFit.cover)
+                    : Icon(
+                        Icons.account_balance_wallet_rounded,
+                        color: Color.fromARGB(255, 44, 44, 44),
+                      )
               ],
             )
           ],
@@ -220,27 +224,26 @@ class _repotPageState extends State<repotPage> {
               _buildFileUpload(),
               _buildIncidentField(),
               // SizedBox(height: 50),
-              ButtonTheme(
-                hoverColor: Colors.black,
-                minWidth: 200.0,
-                height: 50.0,
-                child: RaisedButton(
-                  color: Color.fromARGB(255, 21, 60, 216),
-                  onPressed: () {
-                    if (!_formkey.currentState!.validate()) {
-                      return;
-                    }
-                    _formkey.currentState?.save();
-                  },
-                  // mouseCursor: MouseCursor.uncontrolled,
-                  child: Text(
-                    'Submit',
-                    style: TextStyle(
-                        color: Color.fromARGB(255, 255, 255, 255),
-                        fontSize: 20,
-                        fontStyle: FontStyle.italic,
-                        fontWeight: FontWeight.bold),
-                  ),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  padding:
+                      EdgeInsets.symmetric(horizontal: 150.0, vertical: 20.0),
+                  primary: Color.fromARGB(255, 43, 171, 200),
+                  shape: StadiumBorder(),
+                ),
+                onPressed: () {
+                  if (!_formkey.currentState!.validate()) {
+                    return;
+                  }
+                  _formkey.currentState?.save();
+                },
+                child: Text(
+                  'Submit',
+                  style: TextStyle(
+                      color: Color.fromARGB(255, 255, 255, 255),
+                      fontSize: 20,
+                      fontStyle: FontStyle.italic,
+                      fontWeight: FontWeight.bold),
                 ),
               )
             ],
@@ -261,17 +264,17 @@ class _repotPageState extends State<repotPage> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       //top of the drawer that is the user photo and name
-                      Container(
-                        margin: const EdgeInsets.only(bottom: 10),
-                        height: 70,
-                        decoration: const BoxDecoration(
-                          shape: BoxShape.circle,
-                          image: DecorationImage(
-                            image: NetworkImage(
-                                'https://as2.ftcdn.net/v2/jpg/01/64/19/61/1000_F_164196196_Sq7LZmLMqf7mrV6MeDo7UdBfJoAIyBsG.jpg'),
-                          ),
-                        ),
-                      ),
+                      // Container(
+                      //   margin: const EdgeInsets.only(bottom: 10),
+                      //   height: 70,
+                      //   decoration: const BoxDecoration(
+                      //     shape: BoxShape.circle,
+                      //     image: DecorationImage(
+                      //       image: NetworkImage(
+                      //           'https://as2.ftcdn.net/v2/jpg/01/64/19/61/1000_F_164196196_Sq7LZmLMqf7mrV6MeDo7UdBfJoAIyBsG.jpg'),
+                      //     ),
+                      //   ),
+                      // ),
                       Text(
                         'User Name Here',
                         style: TextStyle(color: Colors.white, fontSize: 20),
@@ -287,8 +290,10 @@ class _repotPageState extends State<repotPage> {
                 child: Column(
                   // list of menus
                   children: [
-                    menus(1, "Help", Icons.help_center),
-                    menus(2, "Logout", Icons.logout),
+                    // menus(1, "Help", Icons.help_center),
+                    menus(1, "History", Icons.history),
+                    menus(2, "Setting", Icons.settings),
+                    menus(3, "Logout", Icons.logout),
                   ],
                 ),
               ),
@@ -304,9 +309,10 @@ class _repotPageState extends State<repotPage> {
       child: InkWell(
         hoverColor: Color.fromARGB(48, 0, 121, 169),
         onTap: () {
+          Navigator.pop(context);
           if (id == 1) {
             Navigator.of(context)
-                .push(MaterialPageRoute(builder: (context) => MyApp()));
+                .push(MaterialPageRoute(builder: (context) => historyPage()));
           }
           if (id == 2) {
             Navigator.of(context)
