@@ -1,7 +1,7 @@
 // ignore_for_file: file_names, prefer_const_constructors, camel_case_types, unused_field, unused_element, prefer_const_literals_to_create_immutables, deprecated_member_use, body_might_complete_normally_nullable, curly_braces_in_flow_control_structures, avoid_print, avoid_unnecessary_containers, dead_code, unused_local_variable, prefer_typing_uninitialized_variables, unused_import, avoid_web_libraries_in_flutter
 import 'dart:io';
-import 'package:derash/history.dart';
-import 'package:derash/main.dart';
+import 'package:derash/screens/history.dart';
+// import 'package:derash/main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:bloc/bloc.dart';
@@ -9,7 +9,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:image_picker/image_picker.dart';
 
-import 'bloc/ReportBloc/report_bloc.dart';
+import 'package:derash/blocs/ReportBloc/report_bloc.dart';
 
 class repotPage extends StatefulWidget {
   const repotPage({Key? key}) : super(key: key);
@@ -346,10 +346,10 @@ class _repotPageState extends State<repotPage> {
             Navigator.of(context)
                 .push(MaterialPageRoute(builder: (context) => historyPage()));
           }
-          if (id == 2) {
-            Navigator.of(context)
-                .push(MaterialPageRoute(builder: (context) => MyApp()));
-          }
+          // if (id == 2) {
+          //   Navigator.of(context)
+          //       .push(MaterialPageRoute(builder: (context) => MyApp()));
+          // }
         },
         child: Padding(
           padding: EdgeInsets.all(15.0),
