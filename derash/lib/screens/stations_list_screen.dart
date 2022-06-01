@@ -25,10 +25,7 @@ class StationListScreen extends StatelessWidget {
     final stations = manager.stations;
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text('List of Stations ${stations.length}'),
-        backgroundColor: const Color.fromRGBO(58, 66, 86, 1.0),
-      ),
+      appBar: AppBar(title: Text('List of Stations ${stations.length}')),
       body: Builder(builder: (context) {
         return Padding(
           padding: const EdgeInsets.all(16.0),
