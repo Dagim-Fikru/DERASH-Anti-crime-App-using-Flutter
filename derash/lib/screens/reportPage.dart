@@ -4,8 +4,12 @@ import 'package:derash/history.dart';
 import 'package:derash/main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:bloc/bloc.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:image_picker/image_picker.dart';
+
+import 'bloc/ReportBloc/report_bloc.dart';
 
 class repotPage extends StatefulWidget {
   const repotPage({Key? key}) : super(key: key);
@@ -205,102 +209,130 @@ class _repotPageState extends State<repotPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Report page'),
-        backgroundColor: Colors.brown,
-        centerTitle: true,
-      ),
-      backgroundColor: Color.fromARGB(255, 44, 44, 44),
-      body: Container(
-        margin: EdgeInsets.all(24),
-        child: Form(
-          key: _formkey,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: <Widget>[
-              _buildLocationField(),
-              _buildDateField(),
-              _buildFileUpload(),
-              _buildIncidentField(),
-              // SizedBox(height: 50),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  padding:
-                      EdgeInsets.symmetric(horizontal: 150.0, vertical: 20.0),
-                  primary: Color.fromARGB(255, 43, 171, 200),
-                  shape: StadiumBorder(),
-                ),
+    return BlocBuilder<ReportBloc, ReportState>(
+      builder: (context, state) {
+        if (state is ReportInitial) {
+          return Center(
+            child: CircularProgressIndicator(),
+          );
+        }
+        if (state is loadingError) {
+          return Center(
+            child: ElevatedButton(
                 onPressed: () {
-                  if (!_formkey.currentState!.validate()) {
-                    return;
-                  }
-                  _formkey.currentState?.save();
+                  context.read<ReportBloc>().add(getLocation());
                 },
-                child: Text(
-                  'Submit',
-                  style: TextStyle(
-                      color: Color.fromARGB(255, 255, 255, 255),
-                      fontSize: 20,
-                      fontStyle: FontStyle.italic,
-                      fontWeight: FontWeight.bold),
-                ),
-              )
-            ],
-          ),
-        ),
-      ),
-      drawer: Drawer(
-        child: Container(
-          color: Color.fromARGB(255, 15, 9, 101),
-          child: Column(
-            children: [
-              Container(
-                color: Color.fromARGB(255, 3, 44, 78),
-                width: double.infinity,
-                height: 200,
-                padding: const EdgeInsets.only(top: 20.0),
+                child: Text('Retry')),
+          );
+        }
+        if (state is ReportLoaded)
+        // else
+        {
+          return Scaffold(
+            appBar: AppBar(
+              title: Text('Report page'),
+              backgroundColor: Colors.brown,
+              centerTitle: true,
+            ),
+            backgroundColor: Color.fromARGB(255, 44, 44, 44),
+            body: Container(
+              margin: EdgeInsets.all(24),
+              child: Form(
+                key: _formkey,
                 child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      //top of the drawer that is the user photo and name
-                      // Container(
-                      //   margin: const EdgeInsets.only(bottom: 10),
-                      //   height: 70,
-                      //   decoration: const BoxDecoration(
-                      //     shape: BoxShape.circle,
-                      //     image: DecorationImage(
-                      //       image: NetworkImage(
-                      //           'https://as2.ftcdn.net/v2/jpg/01/64/19/61/1000_F_164196196_Sq7LZmLMqf7mrV6MeDo7UdBfJoAIyBsG.jpg'),
-                      //     ),
-                      //   ),
-                      // ),
-                      Text(
-                        'User Name Here',
-                        style: TextStyle(color: Colors.white, fontSize: 20),
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: <Widget>[
+                    _buildLocationField(),
+                    _buildDateField(),
+                    _buildFileUpload(),
+                    _buildIncidentField(),
+                    // SizedBox(height: 50),
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        padding: EdgeInsets.symmetric(
+                            horizontal: 150.0, vertical: 20.0),
+                        primary: Color.fromARGB(255, 43, 171, 200),
+                        shape: StadiumBorder(),
                       ),
-                      Text(
-                        'user@gmail.com',
-                        style: TextStyle(color: Colors.grey[200], fontSize: 15),
+                      onPressed: () {
+                        if (!_formkey.currentState!.validate()) {
+                          return;
+                        }
+                        _formkey.currentState?.save();
+                      },
+                      child: Text(
+                        'Submit',
+                        style: TextStyle(
+                            color: Color.fromARGB(255, 255, 255, 255),
+                            fontSize: 20,
+                            fontStyle: FontStyle.italic,
+                            fontWeight: FontWeight.bold),
                       ),
-                    ]),
-              ),
-              Container(
-                padding: EdgeInsets.only(top: 15),
-                child: Column(
-                  // list of menus
-                  children: [
-                    // menus(1, "Help", Icons.help_center),
-                    menus(1, "History", Icons.history),
-                    menus(2, "Setting", Icons.settings),
-                    menus(3, "Logout", Icons.logout),
+                    )
                   ],
                 ),
               ),
-            ],
-          ),
-        ),
-      ),
+            ),
+            drawer: Drawer(
+              child: Container(
+                color: Color.fromARGB(255, 15, 9, 101),
+                child: Column(
+                  children: [
+                    Container(
+                      color: Color.fromARGB(255, 3, 44, 78),
+                      width: double.infinity,
+                      height: 200,
+                      padding: const EdgeInsets.only(top: 20.0),
+                      child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            //top of the drawer that is the user photo and name
+                            // Container(
+                            //   margin: const EdgeInsets.only(bottom: 10),
+                            //   height: 70,
+                            //   decoration: const BoxDecoration(
+                            //     shape: BoxShape.circle,
+                            //     image: DecorationImage(
+                            //       image: NetworkImage(
+                            //           'https://as2.ftcdn.net/v2/jpg/01/64/19/61/1000_F_164196196_Sq7LZmLMqf7mrV6MeDo7UdBfJoAIyBsG.jpg'),
+                            //     ),
+                            //   ),
+                            // ),
+                            Text(
+                              'User Name Here',
+                              style:
+                                  TextStyle(color: Colors.white, fontSize: 20),
+                            ),
+                            Text(
+                              'user@gmail.com',
+                              style: TextStyle(
+                                  color: Colors.grey[200], fontSize: 15),
+                            ),
+                          ]),
+                    ),
+                    Container(
+                      padding: EdgeInsets.only(top: 15),
+                      child: Column(
+                        // list of menus
+                        children: [
+                          // menus(1, "Help", Icons.help_center),
+                          menus(1, "History", Icons.history),
+                          menus(2, "Profile", Icons.person),
+                          menus(3, "Logout", Icons.logout),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          );
+        } else {
+          return Center(
+            child: Text('nothing'),
+          );
+        }
+      },
     );
   }
 
