@@ -53,6 +53,7 @@ class _MyAppState extends State<MyApp> {
       child: Consumer<AppStateManager>(
         builder: (context, profileManager, child) {
           return MaterialApp(
+            debugShowCheckedModeBanner: false,
             theme: ThemeData.light(),
             title: 'Derash',
             home: Router(
