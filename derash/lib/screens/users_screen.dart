@@ -1,3 +1,4 @@
+import 'package:derash/components/admin.drawer.dart';
 import 'package:derash/components/usertile.dart';
 import 'package:derash/models/profile_manger.dart';
 import 'package:flutter/material.dart';
@@ -39,10 +40,14 @@ class _UsersScreenState extends State<UsersScreen> {
     return AppBar(
         elevation: 1.0,
         backgroundColor: const Color.fromRGBO(58, 66, 86, 1.0),
-        title: const Text('Users'),
         actions: <Widget>[
-          IconButton(onPressed: () {}, icon: const Icon(Icons.list))
-        ]);
+          IconButton(onPressed: () {
+            
+          }, icon: const Icon(Icons.list))
+        ],
+        title: const Text('Users'),
+
+        );
   }
 
   Widget buildBody(BuildContext context) {

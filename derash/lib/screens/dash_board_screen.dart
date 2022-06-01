@@ -13,18 +13,17 @@ class DashBoardScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-   
-    return 
-         Scaffold(
-          drawer: const AdminDrawer(),
-          appBar: AppBar(
-              title: const Text("ADMIN DASHBOARD"),
-            ),
-            body: Center(
-                child: Column(children: [
-                  const AdminPiechart(),
-                  const AdminCards(),
-                  const AdminListView()
-                ])));
-                }
+    return Scaffold(
+        drawer: const AdminDrawer(),
+        appBar: AppBar(
+          title: const Text("ADMIN DASHBOARD"),
+          backgroundColor: const Color.fromRGBO(58, 66, 86, 1.0),
+        ),
+        body: Center(
+            child: Column(children: [
+          const AdminPiechart(),
+          const AdminCards(),
+          const AdminListView()
+        ])));
+  }
 }

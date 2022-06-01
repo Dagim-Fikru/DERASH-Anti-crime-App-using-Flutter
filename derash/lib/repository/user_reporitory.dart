@@ -1,7 +1,7 @@
 import 'package:derash/data_providers/api_providers/auth.dart';
 import 'package:derash/data_providers/api_providers/user_api_provider.dart';
 import 'package:derash/data_providers/db_providers/user_db_provider.dart';
-import 'package:derash/models/user.dart';
+import 'package:derash/models/user_model.dart';
 
 class UserRepository {
   final UserAuthApiDataProvider userDataFromAuthApiProvider;
@@ -48,15 +48,5 @@ class UserRepository {
       return userDataFromUserApiProvider.update(id, token, user);
     return dbProvider.updateUser(user);
   }
-  // Future<Course> update(int id, Course course) async {
-  //   return dataProvider.update(id, course);
-  // }
 
-  // Future<List<Course>> fetchAll() async {
-  //   return dataProvider.fetchAll();
-  // }
-
-  // Future<void> delete(int id) async {
-  //   dataProvider.delete(id);
-  // }
 }
