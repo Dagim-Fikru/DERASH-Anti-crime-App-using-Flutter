@@ -44,12 +44,12 @@ class UserDBProvider {
     final res = await db?.insert('User', newUser.toJson());
 
     return res;
-  }
+  }  
   //get user
   getUser(User user) async {
     final db = await database;
     final res =
-        await db?.rawQuery("SELECT * FROM Report WHERE id = ${user.id}");
+        await db?.rawQuery("SELECT * FROM User WHERE id = ${user.id}");
 
     // List<Object> list =
         // res!.isNotEmpty ? res.map((c) => User.fromJson(c)).toList() : [];
@@ -62,18 +62,18 @@ class UserDBProvider {
 
     return res;
   }
-  logoutUser(User user) async {
-     final db = await database;
-    final res = await db?.rawUpdate(
-        "UPDATE Customer SET ,token = ${null} WHERE id = ${user.id}");
+  // logoutUser(User user) async {
+  //    final db = await database;
+  //   final res = await db?.rawUpdate(
+  //       "UPDATE User SET ,token = ${null} WHERE id = ${user.id}");
 
-    return res;
-  }
+  //   return res;
+  // }
   //user update
   updateUser(User user) async {
     final db = await database;
     final res = await db?.rawUpdate(
-        "UPDATE Customer SET username =  ${user.username} , email = ${user.email} , password = ${user.password} ,token = ${user.token}WHERE id = ${user.id}");
+        "UPDATE User SET username =  ${user.username} , email = ${user.email} , password = ${user.password} ,token = ${user.token}WHERE id = ${user.id}");
 
     return res;
   }
@@ -87,5 +87,9 @@ class UserDBProvider {
         // res!.isNotEmpty ? res.map((c) => User.fromJson(c)).toList() : [];
 
     return res;
+  }
+  Future close() async {
+    final db = await database;
+    db?.close();
   }
 }

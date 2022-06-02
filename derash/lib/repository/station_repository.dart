@@ -1,4 +1,3 @@
-
 import '../data_providers/api_providers/station_api_provider.dart';
 import '../data_providers/db_providers/station_db_provider.dart';
 import '../models/station_model.dart';
@@ -15,23 +14,29 @@ class StationRepository {
 
 // get stations
   Future<Future<Object?>> getStations(Station station, String token) async {
-    if (stationApiDataProvider.getAllStations(token) != Null) {
-      return stationApiDataProvider.getAllStations(token);
-    }
+    // if (stationApiDataProvider.getAllStations(token) != Null) {
+    //   return stationApiDataProvider.getAllStations(token);
+    // }
     return dbProvider.getStation(station);
   }
+
 //delete station
-  Future<Future<Object?>> deleteStation(String token ,String id ,Station station ) async {
-    if (stationApiDataProvider.deleteStation(id ,token) != Null) {
-      return stationApiDataProvider.deleteStation(id ,token);
-    }
-    return dbProvider.deleteStation(station);
+  Future<Future<Object?>> deleteStation(
+      String token, String id, Station station) async {
+    // if (stationApiDataProvider.deleteStation(id ,token) != Null) {
+    dbProvider.deleteStation(station);
+
+    return stationApiDataProvider.deleteStation(id, token);
+    // }
   }
+
 //update stations
-  Future<Future<Object?>> updateStation(String id , String token , Station station) async {
-    if (stationApiDataProvider.updateStation(id ,token, station) != Null) {
-      return stationApiDataProvider.updateStation(id ,token, station) ;
-    }
-    return dbProvider.updateStation(station);
+  Future<Future<Object?>> updateStation(
+      String id, String token, Station station) async {
+    // if (stationApiDataProvider.updateStation(id, token, station) != Null) {
+    dbProvider.updateStation(station);
+
+    return stationApiDataProvider.updateStation(id, token, station);
+    // }
   }
 }

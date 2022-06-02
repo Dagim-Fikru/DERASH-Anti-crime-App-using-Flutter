@@ -3,11 +3,17 @@ import 'dart:convert';
 // import 'package:derash/models/station.dart';
 import 'package:derash/models/report_model.dart';
 import 'package:http/http.dart' as http;
+import '../db_providers/report_db_provider.dart';
+
 
 // import 'package:derash/models/user.dart';
 
 class ReportApiDataProvider {
   static const String _baseUrl = "http://localhost:5000/api/station/";
+  final ReportDBProvider dbProvider;
+
+  ReportApiDataProvider(this.dbProvider);
+
 // send report
   Future<Report> sendReport(Report report, String token) async {
     final http.Response response =
@@ -17,7 +23,7 @@ class ReportApiDataProvider {
               "date": report.date,
               "location": report.location,
               "description": report.description,
-              'img' : report.img
+              'img': report.img
             }));
 
     if (response.statusCode == 201) {
@@ -30,10 +36,12 @@ class ReportApiDataProvider {
 
   // user saved report
   Future<Report> getUserReport(String token) async {
-    final response =
-        await http.get(Uri.parse("$_baseUrl/savedreport"), headers: {"token": token});
+    final response = await http
+        .get(Uri.parse("$_baseUrl/savedreport"), headers: {"token": token});
 
     if (response.statusCode == 200) {
+      // dbProvider.createReport(Report.fromJson(jsonDecode(response.body)));
+
       return Report.fromJson(jsonDecode(response.body));
     } else {
       throw Exception("Fetching user report  failed");
@@ -41,9 +49,9 @@ class ReportApiDataProvider {
   }
 
 //get all reports
-  Future<Report> getReports( String token) async {
-    final response = await http
-        .get(Uri.parse(_baseUrl), headers: {"token": token});
+  Future<Report> getReports(String token) async {
+    final response =
+        await http.get(Uri.parse(_baseUrl), headers: {"token": token});
 
     if (response.statusCode == 200) {
       return Report.fromJson(jsonDecode(response.body));
@@ -54,8 +62,8 @@ class ReportApiDataProvider {
 
 //get stat report
   Future<Report> getStatReport(String token) async {
-    final response = await http
-        .get(Uri.parse("$_baseUrl/stats"), headers: {"token": token});
+    final response =
+        await http.get(Uri.parse("$_baseUrl/stats"), headers: {"token": token});
 
     if (response.statusCode == 200) {
       return Report.fromJson(jsonDecode(response.body));

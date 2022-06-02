@@ -9,9 +9,9 @@ class AdminPiechart extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final List<ChartData> chartData = [
-      ChartData('David', 5, Color.fromARGB(255, 0, 0, 0)),
-      ChartData('Steve', 38, Color.fromARGB(244, 117, 176, 91)),
-      ChartData('Jack', 24, Color.fromARGB(244, 173, 30, 173)),
+      ChartData('5 kilo', 5, Color.fromARGB(255, 0, 0, 0)),
+      ChartData('6-kilo', 38, Color.fromARGB(244, 117, 176, 91)),
+      ChartData('4-kilo', 24, Color.fromARGB(244, 173, 30, 173)),
       ChartData('Others', 12, Color.fromARGB(244, 75, 4, 255))
     ];
     return Container(

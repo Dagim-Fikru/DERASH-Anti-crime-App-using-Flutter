@@ -82,24 +82,24 @@ class ReportDBProvider {
   }
 
   // get report stats
-  Future<Map> getStats() async {
-    final db = await database;
-    final res = await db?.rawQuery("SELECT * FROM Report");
-    var locations = [];
-    var map = Map();
-    for (int i = 0; i < res!.length; i++) {
-      locations.add(res[i]);
-      // interate througn the object in the i th index and get location
-    }
+  // Future<Map> getStats() async {
+  //   final db = await database;
+  //   final res = await db?.rawQuery("SELECT * FROM Report");
+  //   var locations = [];
+  //   var map = Map();
+  //   for (int i = 0; i < res!.length; i++) {
+  //     locations.add(res[i]);
+  //     // interate througn the object in the i th index and get location
+  //   }
 
-    for (var element in locations) {
-      if (!map.containsKey(element)) {
-        map[element] = 1;
-      } else {
-        map[element] += 1;
-      }
-    }
+  //   for (var element in locations) {
+  //     if (!map.containsKey(element)) {
+  //       map[element] = 1;
+  //     } else {
+  //       map[element] += 1;
+  //     }
+  //   }
 
-    return map;
-  }
+  //   return map;
+  // }
 }
