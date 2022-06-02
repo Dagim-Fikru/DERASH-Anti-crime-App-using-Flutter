@@ -1,7 +1,6 @@
-import 'package:flutter/painting.dart';
 
 class Station {
-  final String id;
+  final int id;
   final String email;
   final String location;
   final bool isComplete;
@@ -14,10 +13,10 @@ class Station {
   });
 
   Station copyWith(
-      {String? id, String? name, String? location, bool? isComplete}) {
+      {int? id, String? name, String? location, bool? isComplete}) {
     return Station(
       id: id ?? this.id,
-      email: name ?? this.email,
+      email: name ?? email,
       location: location ?? this.location,
       isComplete: isComplete ?? this.isComplete,
     );

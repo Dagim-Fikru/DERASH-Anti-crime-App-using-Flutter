@@ -1,80 +1,72 @@
-import 'package:derash/models/profile_manger.dart';
 import 'package:derash/screens/admin_screen.dart';
 import 'package:derash/screens/profile_screen.dart';
+import 'package:derash/screens/station_detail.dart';
 import 'package:flutter/material.dart';
-import '../models/app_state_manager.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import '../blocs/dashboardbloc/dashboard_bloc.dart';
+import '../blocs/stationbloc/station_bloc.dart';
 
-import '../models/drash_pages.dart';
-import '../models/station_manger.dart';
+import '../blocs/userbloc/user_bloc.dart';
 import '../screens/edit_station.dart';
-
 import '../screens/stations_list_screen.dart';
 
 class AppRouter extends RouterDelegate
     with ChangeNotifier, PopNavigatorRouterDelegateMixin {
   @override
   final GlobalKey<NavigatorState> navigatorKey;
-  final AppStateManager appStateManager;
-  final StationManager stationManager;
-  final ProfileManager profileManager;
 
-  AppRouter({
-    required this.appStateManager,
-    required this.stationManager,
-    required this.profileManager,
-  }) : navigatorKey = GlobalKey<NavigatorState>() {
-    appStateManager.addListener(notifyListeners);
-    stationManager.addListener(notifyListeners);
-    profileManager.addListener(notifyListeners);
-  }
-
-  @override
-  void dispose() {
-    appStateManager.removeListener(notifyListeners);
-    stationManager.removeListener(notifyListeners);
-    profileManager.removeListener(notifyListeners);
-    super.dispose();
-  }
+  AppRouter() : navigatorKey = GlobalKey<NavigatorState>();
 
   @override
   Widget build(BuildContext context) {
+    final stationstate =
+        BlocProvider.of<StationBloc>(context, listen: true).state;
+    final userstate = BlocProvider.of<UserBloc>(context, listen: true).state;
+    final dashstate =
+        BlocProvider.of<DashboardBloc>(context, listen: true).state;
+
     return Navigator(
       key: navigatorKey,
-      onPopPage: _handlePopPage,
       pages: [
-        if (appStateManager.isLoggedIn)
-          AdminScreen.page(
-              stationManager.selectedTab, stationManager, profileManager),
-        if (profileManager.selectedIndex != -1)
-          ProfileScreen.page(
-              profileManager.users[profileManager.selectedIndex]),
-        if (stationManager.isCreatingNewItem)
-          EditStationScreen.page(
-              onCreate: (item) {
-                stationManager.addItem(item);
-              },
-              onUpdate: (item, index) {}),
-        if (stationManager.selectedIndex != -1)
-          EditStationScreen.page(
-              item: stationManager.stations[stationManager.selectedIndex],
-              index: stationManager.selectedIndex,
-              onCreate: (item) {},
-              onUpdate: (item, index) {
-                stationManager.updateItem(item, index);
-              }),
+        const MaterialPage(
+            name: "adminscreen",
+            key: ValueKey("adminscreen"),
+            child: AdminScreen()),
+        if (stationstate is CreatingStation)
+          const MaterialPage(
+              name: "creatingstation",
+              key: ValueKey("creatingstation"),
+              child: EditStationScreen()),
+        if (stationstate is StationSelected)
+          MaterialPage(
+              name: "stationdetails",
+              key: const ValueKey("stationdetails"),
+              child: StationDetailScreen(station: stationstate.station)),
+        if (stationstate is EditingStation)
+          MaterialPage(
+              name: "editingstation",
+              key: const ValueKey("editingstation"),
+              child: EditStationScreen(originalItem: stationstate.station)),
+        if (userstate is UserSelected)
+          MaterialPage(
+              name: "profilepage",
+              key: const ValueKey("profilepage"),
+              child: ProfileScreen(user: userstate.user))
       ],
+      onPopPage: (Route<dynamic> route, result) {
+        if (!route.didPop(result)) {
+          return false;
+        }
+        if (route.settings.name == "creatingstation") {
+          context.read<StationBloc>().add(const LoadStations());
+        }
+        if (route.settings.name == "editingstation") {
+          context.read<StationBloc>().add(const LoadStations());
+        }
+
+        return true;
+      },
     );
-  }
-
-  bool _handlePopPage(Route<dynamic> route, result) {
-    if (!route.didPop(result)) {
-      return false;
-    }
-    if (route.settings.name == DerashPages.editstationPath) {
-      stationManager.itemTapped(-1);
-    }
-
-    return true;
   }
 
   @override

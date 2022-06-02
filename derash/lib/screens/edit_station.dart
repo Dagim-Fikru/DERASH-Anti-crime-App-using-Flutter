@@ -1,43 +1,17 @@
+import 'package:derash/blocs/stationbloc/station_bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:uuid/uuid.dart';
 
-import '../models/drash_pages.dart';
 import '../models/station.dart';
 
 class EditStationScreen extends StatefulWidget {
-  final Function(Station) onCreate;
-  final Function(Station, int) onUpdate;
   final Station? originalItem;
-  final int index;
-  final bool isUpdating;
-
-  static MaterialPage page({
-    Station? item,
-    int index = -1,
-    required Function(Station) onCreate,
-    required Function(Station, int) onUpdate,
-  }) {
-    return MaterialPage(
-      name: DerashPages.editstationPath,
-      key: ValueKey(DerashPages.editstationPath),
-      child: EditStationScreen(
-        originalItem: item,
-        index: index,
-        onCreate: onCreate,
-        onUpdate: onUpdate,
-      ),
-    );
-  }
 
   const EditStationScreen({
     Key? key,
-    required this.onCreate,
-    required this.onUpdate,
     this.originalItem,
-    this.index = -1,
-  })  : isUpdating = (originalItem != null),
-        super(key: key);
+  }) : super(key: key);
 
   @override
   State<EditStationScreen> createState() => _EditStationScreenState();
@@ -61,24 +35,23 @@ class _EditStationScreenState extends State<EditStationScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text(widget.isUpdating ? 'Editing' : 'Creating'),
+          title: Text(widget.originalItem != null ? 'Editing...' : 'Creating'),
           actions: [
             IconButton(
               icon: const Icon(Icons.check),
               onPressed: () {
                 final newStation = Station(
-                  id: widget.originalItem?.id ?? const Uuid().v1(),
+                  id: widget.originalItem?.id ?? 1,
                   location: _locationController.text,
                   email: _emailController.text,
                 );
-
-                if (widget.isUpdating) {
-                  widget.onUpdate(
-                    newStation,
-                    widget.index,
-                  );
-                } else {
-                  widget.onCreate(newStation);
+                if (widget.originalItem != null) {
+                  BlocProvider.of<StationBloc>(context)
+                      .add(UpdateStation(newStation, newStation.id));
+                }
+                if (widget.originalItem == null) {
+                  BlocProvider.of<StationBloc>(context)
+                      .add(CreateStation(newStation));
                 }
               },
             )

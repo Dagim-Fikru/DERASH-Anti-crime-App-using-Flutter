@@ -1,20 +1,10 @@
-import 'package:derash/models/drash_pages.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../models/app_state_manager.dart';
-import '../models/profile_manger.dart';
+import '../blocs/userbloc/user_bloc.dart';
 import '../models/user.dart';
 
 class ProfileScreen extends StatefulWidget {
-  static MaterialPage page(User user) {
-    return MaterialPage(
-      name: DerashPages.profilePath,
-      key: ValueKey(DerashPages.profilePath),
-      child: ProfileScreen(user: user),
-    );
-  }
-
   final User user;
   const ProfileScreen({
     Key? key,
@@ -30,10 +20,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        title: Text('User Profile'),
         leading: IconButton(
           icon: const Icon(Icons.close),
           onPressed: () {
-            Provider.of<ProfileManager>(context, listen: false).itemTapped(-1);
+            context.read<UserBloc>().add(const LoadUsers());
           },
         ),
       ),
@@ -55,36 +46,92 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget buildMenu() {
     return ListView(
       children: [
+        const Card(
+          elevation: 5,
+          shadowColor: Colors.amber,
+          child: ListTile(
+            title: Text('User info',
+                style: TextStyle(
+                    color: Colors.blue,
+                    fontSize: 20,
+                    fontStyle: FontStyle.italic)),
+          ),
+        ),
         ListTile(
-          title: const Text('Reports will be here'),
+          title: const Text('Username'),
+          subtitle: Text(widget.user.username),
+        ),
+        ListTile(
+          title: const Text('Email'),
+          subtitle: Text(widget.user.email),
+        ),
+        ListTile(
+          title: const Text('Role'),
+          subtitle: Text(widget.user.role),
+        ),
+        ListTile(
+          title: const Text('Report history'),
+          onTap: () {},
+        ),
+        SizedBox(
+          height: 20,
+        ),
+        const Card(
+          elevation: 5,
+          shadowColor: Colors.amber,
+          child: ListTile(
+            title: Text('Todo',
+                style: TextStyle(
+                    color: Colors.blue,
+                    fontSize: 20,
+                    fontStyle: FontStyle.italic)),
+          ),
+        ),
+        if (widget.user.role == 'User')
+          ListTile(
+            title: const Text('change the role to admin'),
+            onTap: () {
+              final user = User(
+                  id: widget.user.id,
+                  username: widget.user.username,
+                  email: widget.user.email,
+                  role: 'Admin');
+
+              context.read<UserBloc>().add(const LoadUsers());
+            },
+          ),
+        ListTile(
+          title: const Text('Deactivate this account',
+              style: TextStyle(
+                color: Colors.red,
+              )),
           onTap: () {},
         ),
         ListTile(
-          title: const Text('Log out'),
+          title: const Text('Remove this user',
+              style: TextStyle(
+                color: Colors.red,
+              )),
           onTap: () {
-            Provider.of<ProfileManager>(context, listen: false).itemTapped(-1);
-
-            Provider.of<AppStateManager>(context, listen: false).logout();
+            context.read<UserBloc>().add(DeleteUser(widget.user));
           },
-        )
+        ),
       ],
     );
   }
 
   Widget buildProfile() {
     return Column(
-      children: [
-        CircleAvatar(radius: 50),
-        const SizedBox(height: 16.0),
-        Text(
-          widget.user.username,
-          style: const TextStyle(fontSize: 21),
+      children: const [
+        CircleAvatar(
+          radius: 50,
+          backgroundImage: AssetImage('assets/profile.png'),
         ),
-        Text(widget.user.email),
+        SizedBox(height: 16.0),
         Text(
-          '${widget.user.id} points',
-          style: const TextStyle(
-            fontSize: 30,
+          ' last seen resently',
+          style: TextStyle(
+            fontSize: 20,
             color: Colors.green,
           ),
         ),

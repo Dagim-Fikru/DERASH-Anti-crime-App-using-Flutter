@@ -1,24 +1,12 @@
-import 'package:derash/components/usertile.dart';
-import 'package:derash/models/profile_manger.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../components/station_tile.dart';
-import '../models/drash_pages.dart';
-import '../models/station_manger.dart';
+import '../blocs/userbloc/user_bloc.dart';
+
 import '../models/user.dart';
 
 class UsersScreen extends StatefulWidget {
-  final ProfileManager manager;
-  static MaterialPage page(ProfileManager manager) {
-    return MaterialPage(
-      name: DerashPages.usersPath,
-      key: ValueKey(DerashPages.usersPath),
-      child: UsersScreen(manager: manager),
-    );
-  }
-
-  const UsersScreen({Key? key, required this.manager}) : super(key: key);
+  const UsersScreen({Key? key}) : super(key: key);
 
   @override
   State<UsersScreen> createState() => _UsersScreenState();
@@ -26,16 +14,45 @@ class UsersScreen extends StatefulWidget {
 
 class _UsersScreenState extends State<UsersScreen> {
   @override
+  void didChangeDependencies() {
+    context.read<UserBloc>().add(const LoadUsers());
+    super.didChangeDependencies();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final users = widget.manager.users;
-    return Scaffold(
-      appBar: buildAppBar(context),
-      // backgroundColor: const Color.fromRGBO(58, 66, 86, 1.0),
-      body: buildBody(context),
+    return BlocBuilder<UserBloc, UserState>(
+      builder: (context, state) {
+        if (state is UserLoading) {
+          return const Center(child: CircularProgressIndicator());
+        }
+        if (state is UserLoadedSuccess) {
+          final users = state.users;
+          return Scaffold(
+            appBar: buildAppBar(context, users),
+            // backgroundColor: const Color.fromRGBO(58, 66, 86, 1.0),
+            body: buildBody(context, users),
+          );
+        } else {
+          return Center(
+              child: Column(children: [
+            const Text('Somthing went wrong'),
+            const SizedBox(
+              height: 20,
+            ),
+            ElevatedButton(
+              child: const Text('Retry'),
+              onPressed: () {
+                context.read<UserBloc>().add(const LoadUsers());
+              },
+            ),
+          ]));
+        }
+      },
     );
   }
 
-  PreferredSizeWidget? buildAppBar(BuildContext context) {
+  PreferredSizeWidget? buildAppBar(BuildContext context, List<User> users) {
     return AppBar(
         elevation: 1.0,
         backgroundColor: const Color.fromRGBO(58, 66, 86, 1.0),
@@ -45,10 +62,9 @@ class _UsersScreenState extends State<UsersScreen> {
         ]);
   }
 
-  Widget buildBody(BuildContext context) {
-    final users = widget.manager.users;
+  Widget buildBody(BuildContext context, List<User> users) {
     return Container(
-      padding: EdgeInsets.only(left: 10, right: 10),
+      padding: const EdgeInsets.only(left: 10, right: 10),
       child: ListView.builder(
         scrollDirection: Axis.vertical,
         shrinkWrap: true,
@@ -58,7 +74,7 @@ class _UsersScreenState extends State<UsersScreen> {
           return InkWell(
             child: makeListTile(context, item),
             onTap: () {
-              widget.manager.itemTapped(index);
+              context.read<UserBloc>().add(SelectUser(users[index]));
             },
           );
         },
@@ -71,23 +87,23 @@ class _UsersScreenState extends State<UsersScreen> {
       contentPadding:
           const EdgeInsets.symmetric(horizontal: 20.0, vertical: 3.0),
       title: Row(children: [
-        CircleAvatar(
+        const CircleAvatar(
           radius: 15,
           backgroundColor: Color.fromARGB(0, 77, 61, 61),
-          backgroundImage: AssetImage('assets/myimage.webp'),
+          backgroundImage: AssetImage('assets/profile.png'),
           // child: Image.asset("assets/myimage.webp")
         ),
-        SizedBox(width: 10),
+        const SizedBox(width: 10),
         Text(
           user.username,
-          style: TextStyle(fontWeight: FontWeight.bold),
+          style: const TextStyle(fontWeight: FontWeight.bold),
         ),
       ]),
       subtitle: Row(
         children: <Widget>[
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
           const Icon(Icons.email, size: 18),
-          SizedBox(width: 20),
+          const SizedBox(width: 20),
           Text(
             user.email,
           )

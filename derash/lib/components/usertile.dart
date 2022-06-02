@@ -1,15 +1,12 @@
 import 'package:derash/models/user.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:intl/intl.dart';
 
-import '../models/station.dart';
 
 class UserTile extends StatelessWidget {
   final User item;
   final Function(bool?)? onComplete;
 
-  UserTile({
+  const UserTile({
     Key? key,
     required this.item,
     this.onComplete,
