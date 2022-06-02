@@ -17,9 +17,9 @@ class UserRepository {
     // }
   }
 
-  Future<User> login(User user) async {
+  Future<User> login(String email , String password) async {
     // if (userDataFromAuthApiProvider.signInUser(user) != Null) {}
-    User userDataFromApi = userDataFromAuthApiProvider.signInUser(user) as User;
+    User userDataFromApi = userDataFromAuthApiProvider.signInUser(email,password) as User;
     // dbProvider.updateUser(userDataFromApi);
     dbProvider.createUser(userDataFromApi);
 

@@ -26,12 +26,12 @@ class UserAuthApiDataProvider {
   }
 
 //login
-  Future<User> signInUser(User user) async {
+  Future<User> signInUser(String  email , String password) async {
     final http.Response response = await http.post(Uri.parse("$_baseUrl/login"),
         headers: <String, String>{"Content-Type": "application/json"},
         body: jsonEncode({
-          "email": user.email,
-          "password": user.password,
+          "email": email,
+          "password":password,
         }));
 
     if (response.statusCode == 201) {
