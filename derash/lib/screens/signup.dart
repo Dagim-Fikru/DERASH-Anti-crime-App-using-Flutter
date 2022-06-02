@@ -1,10 +1,17 @@
 
-import 'login.dart';
+// import 'package:quiz/auth/login/login_event.dart';
+import 'package:quiz/screens/dag.dart';
+import 'package:quiz/screens/login.dart';
 import '../component/header_widget.dart';
 import 'package:flutter/material.dart';
 import '../component/theme_helper.dart';
 import 'package:hexcolor/hexcolor.dart';
+import '../screens/dag.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import '../auth/signup/sign_up_bloc.dart';
+import '../auth/signup/sign_up_event.dart';
+import '../auth/signup/sign_up_state.dart';
 
 
 class SignUpPage extends StatefulWidget {
@@ -15,7 +22,10 @@ class SignUpPage extends StatefulWidget {
 }
 
 class _SignUpPageState extends State<SignUpPage> {
-    
+    final userCtrl = TextEditingController();
+    final passCtrl = TextEditingController();
+    final emailCtrl = TextEditingController();
+    final passconfCtrl = TextEditingController();
     final _formKey = GlobalKey<FormState>();
     bool checkedValue = false;
     bool checkboxValue = false;
@@ -44,6 +54,16 @@ class _SignUpPageState extends State<SignUpPage> {
                           child: Container(
                             child: TextFormField(
                               decoration: ThemeHelper().textInputDecoration('UserName', 'Enter your user name'),
+                               validator: (val) {
+                              if (val!.isEmpty) {
+                                return "Username is Required";
+                              }
+                               else if(val.length<3){
+                                return "The Username is to short";
+                              }
+                              
+                              return null;
+                            },
                             ),
                             decoration: ThemeHelper().inputBoxDecorationShaddow(),
                           ),
@@ -57,6 +77,7 @@ class _SignUpPageState extends State<SignUpPage> {
                               if(!(val!.isEmpty) && !RegExp(r"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?)*$").hasMatch(val)){
                                 return "Enter a valid email address";
                               }
+                              
                               return null;
                             },
                           ),
@@ -72,6 +93,9 @@ class _SignUpPageState extends State<SignUpPage> {
                               if (val!.isEmpty) {
                                 return "Please enter your password";
                               }
+                              else if(val.length<8){
+                                return "The password is to short";
+                              }
                               return null;
                             },
                           ),
@@ -85,7 +109,7 @@ class _SignUpPageState extends State<SignUpPage> {
                                 "Confirm password*", "confirm your password"),
                             validator: (val) {
                               if (val!.isEmpty) {
-                                return "Please enter your password";
+                                return "Please re-enter your password";
                               }
                               return null;
                             },
@@ -156,7 +180,7 @@ class _SignUpPageState extends State<SignUpPage> {
                               if (_formKey.currentState!.validate()) {
                                 Navigator.of(context).pushAndRemoveUntil(
                                     MaterialPageRoute(
-                                        builder: (context) => LoginPage()
+                                        builder: (context) => Dag()
                                     ),
                                         (Route<dynamic> route) => false
                                 );
@@ -164,6 +188,56 @@ class _SignUpPageState extends State<SignUpPage> {
                             },
                           ),
                         ),
+                               SizedBox(height: 10),
+                     BlocConsumer<AuthBloc, AuthState>(
+                listenWhen: (_, current) {
+                  return current is SignUpSuccessful;
+                },
+                listener: (_, AuthState state) {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => LoginPage()),
+                  );
+                },
+                
+                builder: (_, AuthState state) {
+                  Widget buttonChild = Text("SIgnup");
+                  if (state is SigningUp) {
+                    buttonChild = const SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: CircularProgressIndicator(
+                        color: Colors.white,
+                      ),
+                    );
+                  }
+
+                  if (state is SignUpSuccessful) {
+                    buttonChild = const Text("SignUp successful");
+                  }
+
+                  if (state is SignUpFailed) {
+                    buttonChild = const Text("SignUp  failed");
+                  }
+
+                  return ElevatedButton(
+                    onPressed: state is SigningUp
+                        ? null
+                        : () {
+                            // var currentState;
+                            
+                            final formValid = _formKey.currentState!.validate();
+                            if (!formValid) return;
+
+                            final authBloc = BlocProvider.of<AuthBloc>(context);
+                            // var passCtrl;
+                            // var userCtrl;
+                            authBloc.add(SignUp(userCtrl.text,emailCtrl.text, passCtrl.text,passconfCtrl.text));
+                          },
+                    child: buttonChild,
+                  );
+                },
+              ),
                         SizedBox(height: 20.0),
                         Text("Or create account using social media",  style: TextStyle(color: Colors.grey),),
                         SizedBox(height: 25.0),
