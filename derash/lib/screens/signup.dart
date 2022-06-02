@@ -1,12 +1,12 @@
 
 // import 'package:quiz/auth/login/login_event.dart';
-import 'package:quiz/screens/dag.dart';
-import 'package:quiz/screens/login.dart';
-import '../component/header_widget.dart';
+// import 'package:quiz/screens/dag.dart';
+import 'package:derash/screens/login.dart';
+import '../screens/login.dart';
+import '../components/header_widget.dart';
 import 'package:flutter/material.dart';
-import '../component/theme_helper.dart';
+import '../components/theme_helper.dart';
 import 'package:hexcolor/hexcolor.dart';
-import '../screens/dag.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../auth/signup/sign_up_bloc.dart';
@@ -180,7 +180,7 @@ class _SignUpPageState extends State<SignUpPage> {
                               if (_formKey.currentState!.validate()) {
                                 Navigator.of(context).pushAndRemoveUntil(
                                     MaterialPageRoute(
-                                        builder: (context) => Dag()
+                                        builder: (context) => LoginPage()
                                     ),
                                         (Route<dynamic> route) => false
                                 );

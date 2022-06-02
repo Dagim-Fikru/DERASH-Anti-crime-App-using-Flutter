@@ -1,15 +1,14 @@
- 
-import 'package:quiz/screens/dag.dart';
+
 
 import '../auth/login/login_event.dart';
 import '../auth/login/login_state.dart';
 import '../auth/login/login_bloc.dart';
-import '../component/header_widget.dart';
+import '../components/header_widget.dart';
 import 'package:flutter/material.dart';
-import '../component/theme_helper.dart';
+import '../components/theme_helper.dart';
 import 'package:flutter/gestures.dart';
 import 'signup.dart';
-import '../screens/dag.dart';
+// import '../screens/dag.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class LoginPage extends StatelessWidget {
