@@ -1,4 +1,3 @@
-
 class Station {
   final int id;
   final String email;

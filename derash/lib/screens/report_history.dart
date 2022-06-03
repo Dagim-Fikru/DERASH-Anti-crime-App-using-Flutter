@@ -2,9 +2,18 @@
 
 import 'package:flutter/material.dart';
 
-class historyPage extends StatelessWidget {
-  const historyPage({Key? key}) : super(key: key);
+import '../models/report.dart';
 
+class ReportHistoryScreen extends StatefulWidget {
+  final List<Report> reports;
+  const ReportHistoryScreen({Key? key, required this.reports})
+      : super(key: key);
+
+  @override
+  State<ReportHistoryScreen> createState() => _ReportHistoryScreenState();
+}
+
+class _ReportHistoryScreenState extends State<ReportHistoryScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(

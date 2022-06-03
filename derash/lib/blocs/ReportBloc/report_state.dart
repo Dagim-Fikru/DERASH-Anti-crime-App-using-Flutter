@@ -35,9 +35,9 @@ class historyLoaded extends ReportState {
   const historyLoaded(this.reports);
 }
 
-class unauthenticated extends ReportState {
-  const unauthenticated();
-}
+// class unauthenticated extends ReportState {
+//   const unauthenticated();
+// }
 
 class ProfileUpdating extends ReportState {
   final User user;

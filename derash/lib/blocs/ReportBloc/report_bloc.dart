@@ -48,22 +48,22 @@ class ReportBloc extends Bloc<ReportEvent, ReportState> {
       }
     });
 
-    on<logout>((event, emit) async {
-      emit(unauthenticated());
-    });
+    // on<logout>((event, emit) async {
+    //   emit(unauthenticated());
+    // });
 
     on<GoToProfile>((event, emit) async {
       emit(ProfileUpdating(event.user));
     });
 
-    on<UpdateProfile>((event, emit) async {
-      emit(ReportInitial());
-      try {
-        final user = await userRepository.update(event.user, event.id);
-        emit(unauthenticated());
-      } catch (error) {
-        emit(loadingError(error));
-      }
-    });
+    // on<UpdateProfile>((event, emit) async {
+    //   emit(ReportInitial());
+    //   try {
+    //     final user = await userRepository.update(event.user, event.id);
+    //     emit(unauthenticated());
+    //   } catch (error) {
+    //     emit(loadingError(error));
+    //   }
+    // });
   }
 }

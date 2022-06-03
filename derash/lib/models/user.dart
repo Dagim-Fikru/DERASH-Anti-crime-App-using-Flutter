@@ -7,6 +7,7 @@ class User {
   String? password;
   String role;
   List<Report>? reports;
+  String? token;
 
   User(
       {required this.username,
@@ -14,4 +15,6 @@ class User {
       this.id,
       this.password,
       this.role = 'User'});
+
+  bool get isAdmin => role == 'Admin';
 }

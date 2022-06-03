@@ -13,9 +13,9 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
   final ReportRepository reportRepository;
   final UserRepository userRepository;
   DashboardBloc(this.reportRepository, this.userRepository)
-      : super(DashboardInitial()) {
+      : super(DashboardLoading()) {
     on<LoadReportandUsers>((event, emit) async {
-      emit(DashboardInitial());
+      emit(DashboardLoading());
       try {
         final stat = await reportRepository.getStat();
         final users = await userRepository.fetchAll();

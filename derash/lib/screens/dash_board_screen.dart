@@ -22,7 +22,7 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
   Widget build(BuildContext context) {
     return BlocBuilder<DashboardBloc, DashboardState>(
       builder: (context, state) {
-        if (state is DashboardInitial) {
+        if (state is DashboardLoading) {
           return const Center(child: CircularProgressIndicator());
         }
         if (state is ReportAndUsersLoaded) {

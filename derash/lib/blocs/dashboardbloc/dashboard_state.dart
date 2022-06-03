@@ -3,7 +3,7 @@ part of 'dashboard_bloc.dart';
 @immutable
 abstract class DashboardState extends Equatable {}
 
-class DashboardInitial extends DashboardState {
+class DashboardLoading extends DashboardState {
   @override
   List<Object?> get props => [];
 }
@@ -21,11 +21,6 @@ class LoadingFaild extends DashboardState {
   final Object error;
 
   LoadingFaild(this.error);
-  @override
-  List<Object?> get props => [];
-}
-
-class Unauthenticated extends DashboardState {
   @override
   List<Object?> get props => [];
 }

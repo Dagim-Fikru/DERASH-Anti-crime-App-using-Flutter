@@ -25,18 +25,10 @@ class getHistory extends ReportEvent {
   const getHistory(this.user);
 }
 
-class logout extends ReportEvent {}
+// class logout extends ReportEvent {}
 
 class GoToProfile extends ReportEvent {
   final User user;
 
   const GoToProfile(this.user);
 }
-
-class UpdateProfile extends ReportEvent {
-  final User user;
-  final int id;
-
-  const UpdateProfile(this.user,this.id);
-}
-

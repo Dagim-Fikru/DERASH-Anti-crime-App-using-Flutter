@@ -2,20 +2,18 @@ part of 'login_bloc.dart';
 
 abstract class LoginState {}
 
-class NotLogedIn extends LoginState {}
+class Unauthenticated extends LoginState {}
 
-class LogingIn extends LoginState {}
+class Loging extends LoginState {}
 
-class LoginFailed extends LoginState {
+class LogingFailed extends LoginState {
   final Object error;
 
-  LoginFailed(this.error);
+  LogingFailed(this.error);
 }
 
-class LoginSuccessful extends LoginState {
+class Authenticated extends LoginState {
   final User user;
-  final String token;
-  final bool isAdmin;
 
-  LoginSuccessful(this.user, this.token, this.isAdmin);
+  Authenticated(this.user);
 }

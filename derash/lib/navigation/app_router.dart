@@ -1,6 +1,9 @@
+import 'package:derash/blocs/ReportBloc/report_bloc.dart';
 import 'package:derash/blocs/auth/login_bloc/login_bloc.dart';
 import 'package:derash/screens/admin_screen.dart';
-import 'package:derash/screens/profile_screen.dart';
+import 'package:derash/screens/report_history.dart';
+import 'package:derash/screens/user_details.dart';
+import 'package:derash/screens/reportPage.dart';
 import 'package:derash/screens/signup.dart';
 import 'package:derash/screens/station_detail.dart';
 import 'package:flutter/material.dart';
@@ -30,11 +33,13 @@ class AppRouter extends RouterDelegate
         BlocProvider.of<DashboardBloc>(context, listen: true).state;
     final signstate = BlocProvider.of<SignUpBloc>(context, listen: true).state;
     final loginstate = BlocProvider.of<LoginBloc>(context, listen: true).state;
+    final reportstate =
+        BlocProvider.of<ReportBloc>(context, listen: true).state;
 
     return Navigator(
       key: navigatorKey,
       pages: [
-        if (signstate is HasAccount)
+        if (signstate is HasAccount && loginstate is Unauthenticated)
           MaterialPage(
               name: "loginscreen",
               key: const ValueKey("loginscreen"),
@@ -44,7 +49,22 @@ class AppRouter extends RouterDelegate
               name: "signupscreen",
               key: ValueKey("signupscreen"),
               child: SignUpScreen()),
-        if (loginstate is LoginSuccessful && loginstate.isAdmin)
+        if (loginstate is Authenticated && !loginstate.user.isAdmin)
+          const MaterialPage(
+              name: "reportscreen",
+              key: ValueKey("reportscreen"),
+              child: ReportScreen()),
+        if (reportstate is historyLoaded)
+          MaterialPage(
+              name: "reporthistory",
+              key: const ValueKey("reporthistory"),
+              child: ReportHistoryScreen(reports: reportstate.reports)),
+        if (reportstate is historyLoaded)
+          MaterialPage(
+              name: "profilescreen",
+              key: const ValueKey("profilescreen"),
+              child: ReportHistoryScreen(reports: reportstate.reports)),
+        if (loginstate is Authenticated && loginstate.user.isAdmin)
           const MaterialPage(
               name: "adminscreen",
               key: ValueKey("adminscreen"),
@@ -66,9 +86,9 @@ class AppRouter extends RouterDelegate
               child: EditStationScreen(originalItem: stationstate.station)),
         if (userstate is UserSelected)
           MaterialPage(
-              name: "profilepage",
-              key: const ValueKey("profilepage"),
-              child: ProfileScreen(user: userstate.user))
+              name: "userdetail",
+              key: const ValueKey("userdetail"),
+              child: UserDetailsScreen(user: userstate.user))
       ],
       onPopPage: (Route<dynamic> route, result) {
         if (!route.didPop(result)) {

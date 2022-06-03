@@ -7,8 +7,3 @@ class LoadReportandUsers extends DashboardEvent {
   @override
   List<Object?> get props => [];
 }
-
-class LogOut extends DashboardEvent {
-  @override
-  List<Object?> get props => [];
-}

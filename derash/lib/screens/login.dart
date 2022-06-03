@@ -80,12 +80,12 @@ class _LoginScreenState extends State<LoginScreen> {
                             SizedBox(height: 10),
                             BlocConsumer<LoginBloc, LoginState>(
                               listenWhen: (_, current) {
-                                return current is LoginSuccessful;
+                                return current is Authenticated;
                               },
                               listener: (_, LoginState state) {},
                               builder: (_, LoginState state) {
                                 Widget buttonChild = Text("Log in");
-                                if (state is LogingIn) {
+                                if (state is Loging) {
                                   buttonChild = const SizedBox(
                                     width: 20,
                                     height: 20,
@@ -95,16 +95,16 @@ class _LoginScreenState extends State<LoginScreen> {
                                   );
                                 }
 
-                                if (state is LoginSuccessful) {
+                                if (state is Authenticated) {
                                   buttonChild = const Text("Login successful");
                                 }
 
-                                if (state is LoginFailed) {
+                                if (state is LogingFailed) {
                                   buttonChild = const Text("Login failed");
                                 }
 
                                 return ElevatedButton(
-                                  onPressed: state is LogingIn
+                                  onPressed: state is Loging
                                       ? null
                                       : () {
                                           // var currentState;

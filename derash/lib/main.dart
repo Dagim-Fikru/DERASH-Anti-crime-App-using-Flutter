@@ -8,6 +8,7 @@ import 'package:derash/repository/user_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'blocs/ReportBloc/report_bloc.dart';
 import 'blocs/auth/login_bloc/login_bloc.dart';
 import 'blocs/userbloc/user_bloc.dart';
 import 'navigation/app_router.dart';
@@ -49,7 +50,10 @@ class _MyAppState extends State<MyApp> {
           BlocProvider<SignUpBloc>(
               create: (context) => SignUpBloc(userRepository)),
           BlocProvider<LoginBloc>(
-              create: (context) => LoginBloc(userRepository))
+              create: (context) => LoginBloc(userRepository)),
+          BlocProvider<ReportBloc>(
+              create: (context) => ReportBloc(
+                  userRepository, reportRepository, stationRepository))
         ],
         child: MaterialApp(
           theme: ThemeData.light(),

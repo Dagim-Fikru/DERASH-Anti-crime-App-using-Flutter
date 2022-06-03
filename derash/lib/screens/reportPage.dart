@@ -1,6 +1,7 @@
 // ignore_for_file: file_names, prefer_const_constructors, camel_case_types, unused_field, unused_element, prefer_const_literals_to_create_immutables, deprecated_member_use, body_might_complete_normally_nullable, curly_braces_in_flow_control_structures, avoid_print, avoid_unnecessary_containers, dead_code, unused_local_variable, prefer_typing_uninitialized_variables, unused_import, avoid_web_libraries_in_flutter
 import 'dart:io';
-import 'package:derash/screens/history.dart';
+import 'package:derash/blocs/auth/login_bloc/login_bloc.dart';
+import 'package:derash/screens/report_history.dart';
 // import 'package:derash/main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -11,14 +12,22 @@ import 'package:image_picker/image_picker.dart';
 
 import 'package:derash/blocs/ReportBloc/report_bloc.dart';
 
-class repotPage extends StatefulWidget {
-  const repotPage({Key? key}) : super(key: key);
+import '../models/user.dart';
+
+class ReportScreen extends StatefulWidget {
+  const ReportScreen({Key? key}) : super(key: key);
 
   @override
-  State<repotPage> createState() => _repotPageState();
+  State<ReportScreen> createState() => _ReportScreenState();
 }
 
-class _repotPageState extends State<repotPage> {
+class _ReportScreenState extends State<ReportScreen> {
+  @override
+  void didChangeDependencies() {
+    context.read<ReportBloc>().add(getLocation());
+    super.didChangeDependencies();
+  }
+
   late String _location;
   late String _date;
   late String _incident;
@@ -316,9 +325,9 @@ class _repotPageState extends State<repotPage> {
                         // list of menus
                         children: [
                           // menus(1, "Help", Icons.help_center),
-                          menus(1, "History", Icons.history),
-                          menus(2, "Profile", Icons.person),
-                          menus(3, "Logout", Icons.logout),
+                          menus(1, "History", Icons.history, context),
+                          menus(2, "Profile", Icons.person, context),
+                          menus(3, "Logout", Icons.logout, context),
                         ],
                       ),
                     ),
@@ -336,20 +345,26 @@ class _repotPageState extends State<repotPage> {
     );
   }
 
-  Widget menus(int id, String title, IconData icon) {
+  Widget menus(int id, String title, IconData icon, BuildContext context) {
+    final loginstate = BlocProvider.of<LoginBloc>(context, listen: false).state;
+    late User user;
+    if (loginstate is Authenticated) {
+      user = loginstate.user;
+    }
     return Material(
       child: InkWell(
         hoverColor: Color.fromARGB(48, 0, 121, 169),
         onTap: () {
           Navigator.pop(context);
           if (id == 1) {
-            Navigator.of(context)
-                .push(MaterialPageRoute(builder: (context) => historyPage()));
+            context.read<ReportBloc>().add(getHistory(user));
           }
-          // if (id == 2) {
-          //   Navigator.of(context)
-          //       .push(MaterialPageRoute(builder: (context) => MyApp()));
-          // }
+          if (id == 2) {
+            context.read<ReportBloc>().add(GoToProfile(user));
+          }
+          if (id == 3) {
+            context.read<LoginBloc>().add(Logout(user));
+          }
         },
         child: Padding(
           padding: EdgeInsets.all(15.0),

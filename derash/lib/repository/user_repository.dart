@@ -29,4 +29,6 @@ class UserRepository {
   }
 
   login(String email, String password) {}
+
+  logout(User user) {}
 }
