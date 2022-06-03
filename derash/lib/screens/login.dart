@@ -1,4 +1,5 @@
 import '../blocs/auth/login_bloc/login_bloc.dart';
+import '../blocs/auth/signup_bloc/sign_up_bloc.dart';
 import '../components/header_widget.dart';
 import 'package:flutter/material.dart';
 import '../components/theme_helper.dart';
@@ -7,14 +8,23 @@ import 'signup.dart';
 // import '../screens/dag.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class LoginPage extends StatelessWidget {
-  final formKey = GlobalKey<FormState>();
-  final userCtrl = TextEditingController();
-  final passCtrl = TextEditingController();
-  LoginPage({Key? key}) : super(key: key);
-  double _headerHeight = 200;
-  //  Key formKey = GlobalKey<FormState>();
+class LoginScreen extends StatefulWidget {
+  LoginScreen({Key? key}) : super(key: key);
 
+  @override
+  State<LoginScreen> createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
+  final formKey = GlobalKey<FormState>();
+
+  final userCtrl = TextEditingController();
+
+  final passCtrl = TextEditingController();
+
+  double _headerHeight = 200;
+
+  //  Key formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -119,17 +129,14 @@ class LoginPage extends StatelessWidget {
                               margin: const EdgeInsets.fromLTRB(10, 20, 10, 20),
                               //  child: Text("Don't have an account? Create"),
                               child: Text.rich(TextSpan(children: [
-                                const TextSpan(
-                                    text: "Don\'t have an account? "),
+                                const TextSpan(text: "Don't have an account? "),
                                 TextSpan(
                                   text: 'Create',
                                   recognizer: TapGestureRecognizer()
                                     ..onTap = () {
-                                      Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  SignUpPage()));
+                                      context
+                                          .read<SignUpBloc>()
+                                          .add(CreateAccount());
                                     },
                                   // ..onTap=() => context.go('/signup'),
                                   style: TextStyle(

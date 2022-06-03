@@ -21,4 +21,12 @@ class UserRepository {
     users.add(user);
     return Future.delayed(const Duration(seconds: 2)).then((onValue) => users);
   }
+
+  Future<User> create(User user) async {
+    users.add(user);
+    final muser = user;
+    return Future.delayed(const Duration(seconds: 2)).then((onValue) => muser);
+  }
+
+  login(String email, String password) {}
 }

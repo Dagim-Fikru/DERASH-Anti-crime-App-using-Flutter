@@ -2,7 +2,7 @@ part of 'sign_up_bloc.dart';
 
 abstract class SignUpState {}
 
-class Idle extends SignUpState {}
+class HasNoAccount extends SignUpState {}
 
 class SigningUp extends SignUpState {}
 
@@ -12,4 +12,4 @@ class SignUpFailed extends SignUpState {
   SignUpFailed(this.error);
 }
 
-class SignUpSuccessful extends SignUpState {}
+class HasAccount extends SignUpState {}

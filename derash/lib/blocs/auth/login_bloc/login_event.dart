@@ -7,5 +7,3 @@ class Login extends LoginEvent {
   final String password;
   Login(this.email, this.password);
 }
-
-class CreateAccount extends LoginEvent {}

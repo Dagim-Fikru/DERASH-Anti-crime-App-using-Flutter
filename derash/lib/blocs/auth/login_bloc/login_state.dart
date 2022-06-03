@@ -2,7 +2,7 @@ part of 'login_bloc.dart';
 
 abstract class LoginState {}
 
-class Idle extends LoginState {}
+class NotLogedIn extends LoginState {}
 
 class LogingIn extends LoginState {}
 
@@ -19,5 +19,3 @@ class LoginSuccessful extends LoginState {
 
   LoginSuccessful(this.user, this.token, this.isAdmin);
 }
-
-class AccountCreating extends LoginState {}

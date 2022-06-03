@@ -1,7 +1,7 @@
 import 'package:derash/models/report.dart';
 
 class User {
-  int id;
+  int? id;
   String username;
   String email;
   String? password;
@@ -11,6 +11,7 @@ class User {
   User(
       {required this.username,
       required this.email,
-      required this.id,
-      required this.role});
+      this.id,
+      this.password,
+      this.role = 'User'});
 }

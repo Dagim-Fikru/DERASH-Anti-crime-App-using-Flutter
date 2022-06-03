@@ -24,7 +24,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
     on<DeleteUser>((event, emit) async {
       emit(UserLoading());
       try {
-        final users = await userRepository.delete(event.user.id);
+        final users = await userRepository.delete(event.user.id!);
         emit(UserLoadedSuccess(users));
       } catch (error) {
         emit(UserLoadingFaild(error));
@@ -38,7 +38,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
     on<UpdateRole>((event, emit) async {
       emit(UserLoading());
       try {
-        final users = await userRepository.update(event.user, event.user.id);
+        final users = await userRepository.update(event.user, event.user.id!);
         emit(UserLoadedSuccess(users));
       } catch (error) {
         emit(UserLoadingFaild(error));

@@ -10,14 +10,20 @@ import 'package:hexcolor/hexcolor.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class SignUpPage extends StatefulWidget {
-  const SignUpPage({Key? key}) : super(key: key);
+class SignUpScreen extends StatefulWidget {
+  const SignUpScreen({Key? key}) : super(key: key);
 
   @override
-  State<SignUpPage> createState() => _SignUpPageState();
+  State<SignUpScreen> createState() => _SignUpScreenState();
 }
 
-class _SignUpPageState extends State<SignUpPage> {
+class _SignUpScreenState extends State<SignUpScreen> {
+  // @override
+  // void didChangeDependencies() {
+  //   context.read<SignUpBloc>().add(ChangeToNoAccount());
+  //   super.didChangeDependencies();
+  // }
+
   final userCtrl = TextEditingController();
   final passCtrl = TextEditingController();
   final emailCtrl = TextEditingController();
@@ -184,10 +190,9 @@ class _SignUpPageState extends State<SignUpPage> {
                     ),
                     onPressed: () {
                       if (_formKey.currentState!.validate()) {
-                        Navigator.of(context).pushAndRemoveUntil(
-                            MaterialPageRoute(
-                                builder: (context) => LoginPage()),
-                            (Route<dynamic> route) => false);
+                        final authBloc = BlocProvider.of<SignUpBloc>(context);
+                        authBloc.add(SignUp(userCtrl.text, emailCtrl.text,
+                            passCtrl.text, passconfCtrl.text));
                       }
                     },
                   ),
@@ -195,7 +200,7 @@ class _SignUpPageState extends State<SignUpPage> {
                 SizedBox(height: 10),
                 BlocConsumer<SignUpBloc, SignUpState>(
                   listenWhen: (_, current) {
-                    return current is SignUpSuccessful;
+                    return current is HasAccount;
                   },
                   listener: (_, SignUpState state) {},
                   builder: (_, SignUpState state) {
@@ -210,7 +215,7 @@ class _SignUpPageState extends State<SignUpPage> {
                       );
                     }
 
-                    if (state is SignUpSuccessful) {
+                    if (state is HasAccount) {
                       buttonChild = const Text("SignUp successful");
                     }
 
@@ -230,9 +235,6 @@ class _SignUpPageState extends State<SignUpPage> {
 
                               final authBloc =
                                   BlocProvider.of<SignUpBloc>(context);
-                              // var passCtrl;
-                              // var userCtrl;
-
                               authBloc.add(SignUp(userCtrl.text, emailCtrl.text,
                                   passCtrl.text, passconfCtrl.text));
                             },

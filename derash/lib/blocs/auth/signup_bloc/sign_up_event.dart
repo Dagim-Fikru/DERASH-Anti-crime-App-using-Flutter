@@ -10,3 +10,5 @@ class SignUp extends SignUpEvent {
 
   SignUp(this.username, this.email, this.password, this.confirmPass);
 }
+
+class CreateAccount extends SignUpEvent {}
