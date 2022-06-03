@@ -1,6 +1,6 @@
 import '../data_providers/api_providers/station_api_provider.dart';
 import '../data_providers/db_providers/station_db_provider.dart';
-import '../models/station_model.dart';
+import '../models/station.dart';
 
 class StationRepository {
   final StationApiDataProvider stationApiDataProvider;

@@ -1,4 +1,4 @@
-import 'package:derash/models/report_model.dart';
+import 'package:derash/models/report.dart';
 import 'package:derash/models/stats.dart';
 
 import '../data_providers/api_providers/report_api_provider.dart';

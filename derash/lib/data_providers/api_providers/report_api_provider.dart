@@ -2,7 +2,7 @@ import 'dart:convert';
 
 // import 'package:derash/models/station.dart';
 import 'package:derash/data_providers/report_provider.dart';
-import 'package:derash/models/report_model.dart';
+import 'package:derash/models/report.dart';
 import 'package:http/http.dart' as http;
 import '../db_providers/report_db_provider.dart';
 import 'package:derash/models/stats.dart';

@@ -1,5 +1,5 @@
 import 'dart:io';
-import 'package:derash/models/user_model.dart';
+import 'package:derash/models/user.dart';
 import 'package:path/path.dart';
 
 import 'package:path_provider/path_provider.dart';
@@ -66,19 +66,7 @@ class UserDBProvider implements UserProvider {
     }
   }
 
-  @override
-  Future<List<User>> getAllUser() async {
-    try {
-      final db = await database;
-      final res = await db?.rawQuery("SELECT * FROM User ");
 
-      List<User> list =
-          res!.isNotEmpty ? res.map((c) => User.fromJson(c)).toList() : [];
-      return list;
-    } catch (e) {
-      throw Exception("getting users field");
-    }
-  }
 
   @override
   Future<List<User>> updateUser(String id, User user) async {
@@ -90,6 +78,20 @@ class UserDBProvider implements UserProvider {
       return users;
     } catch (e) {
       throw Exception("updating user Field");
+    }
+  }
+  
+  @override
+  Future<List<User>> getAllUser() async{
+      try {
+      final db = await database;
+      final res = await db?.rawQuery("SELECT * FROM User ");
+
+      List<User> list =
+          res!.isNotEmpty ? res.map((c) => User.fromJson(c)).toList() : [];
+      return list;
+    } catch (e) {
+      throw Exception("getting users field");
     }
   }
 }

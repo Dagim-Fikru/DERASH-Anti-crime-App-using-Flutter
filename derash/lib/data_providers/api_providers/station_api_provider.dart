@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:derash/data_providers/station_provider.dart';
-import 'package:derash/models/station_model.dart';
+import 'package:derash/models/station.dart';
 import 'package:http/http.dart' as http;
 
 // import 'package:derash/models/user.dart';

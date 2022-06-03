@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:derash/data_providers/report_provider.dart';
-import 'package:derash/models/report_model.dart';
+import 'package:derash/models/report.dart';
 import 'package:derash/models/stats.dart';
 import 'package:path/path.dart';
 

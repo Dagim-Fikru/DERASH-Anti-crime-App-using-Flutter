@@ -1,6 +1,6 @@
 import 'dart:io';
 import 'package:derash/data_providers/station_provider.dart';
-import 'package:derash/models/station_model.dart';
+import 'package:derash/models/station.dart';
 import 'package:path/path.dart';
 
 import 'package:path_provider/path_provider.dart';

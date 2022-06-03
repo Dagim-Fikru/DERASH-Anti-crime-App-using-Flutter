@@ -1,5 +1,5 @@
 
-import 'package:derash/models/user_model.dart';
+import 'package:derash/models/user.dart';
 
 abstract class UserProvider {
 

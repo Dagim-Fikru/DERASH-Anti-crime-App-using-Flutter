@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:derash/data_providers/user_provider.dart';
 import 'package:http/http.dart' as http;
 
-import 'package:derash/models/user_model.dart';
+import 'package:derash/models/user.dart';
 
 class UserApiDataProvider implements UserProvider {
   static const String _baseUrl = "http://localhost:5000/api/user/";

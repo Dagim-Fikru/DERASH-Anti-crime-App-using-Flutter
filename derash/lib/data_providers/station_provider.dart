@@ -1,5 +1,5 @@
 
-import 'package:derash/models/station_model.dart';
+import 'package:derash/models/station.dart';
 
 abstract class StationProvider {
   Future<List<Station>> addStation(Station station ,);
