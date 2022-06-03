@@ -1,53 +1,68 @@
 import 'dart:convert';
 
+import 'package:derash/data_providers/user_provider.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:derash/models/user_model.dart';
 
-class UserApiDataProvider {
+class UserApiDataProvider implements UserProvider {
   static const String _baseUrl = "http://localhost:5000/api/user/";
+  final String token;
 
-  // get users
-  Future<User> getAllUser(String token) async {
-    final response =
-        await http.get(Uri.parse(_baseUrl), headers: {"token": token});
-
-    if (response.statusCode == 200) {
-      return User.fromJson(jsonDecode(response.body));
-    } else {
-      throw Exception("Fetching User  failed");
-    }
-  }
-
-//delete user
-  Future<User> deleteUser(String id, String token) async {
+  UserApiDataProvider(this.token);
+  
+  @override
+  Future<String> deleteUser(String id) async {
     final response = await http
         .delete(Uri.parse("$_baseUrl/$id"), headers: {"token": token});
 
     if (response.statusCode == 200) {
-      return User.fromJson(jsonDecode(response.body));
+      return response.body;
     } else {
       throw Exception("deleteing User  failed");
     }
   }
 
-// update user data
-  Future<User> update(String id, String token, User user) async {
-    final response = await http.put(Uri.parse("$_baseUrl/$id"),
-        headers: {"token": token},
-        body: jsonEncode({
-          "id": id,
-          "username": user.username,
-          "email": user.email,
-          "password": user.password
-        }));
+  @override
+  Future<List<User>> getAllUser() async {
+    final response =
+        await http.get(Uri.parse(_baseUrl), headers: {"token": token});
 
     if (response.statusCode == 200) {
-      return User.fromJson(jsonDecode(response.body));
+      List<User> users;
+      users = (jsonDecode(response.body) as List)
+          .map((e) => User.fromJson(e))
+          .toList();
+      return users;
     } else {
-      throw Exception("Could not update user");
+      throw Exception("Fetching User  failed");
     }
   }
 
+  
+  @override
+  Future<List<User>> updateUser(String id, User user)async {
+  final response = await http.put(Uri.parse("$_baseUrl/$id"),
+      headers: {"token": token},
+      body: jsonEncode({
+        "id": id,
+        "username": user.username,
+        "email": user.email,
+        "password": user.password
+      }));
 
+  if (response.statusCode == 200) {
+   List<User> users;
+      users = (jsonDecode(response.body) as List)
+          .map((e) => User.fromJson(e))
+          .toList();
+    return users;
+  } else {
+    throw Exception("Could not update user");
+  }
+  }
 }
+
+
+
+

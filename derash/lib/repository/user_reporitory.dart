@@ -1,59 +1,53 @@
 import 'package:derash/data_providers/api_providers/auth.dart';
 import 'package:derash/data_providers/api_providers/user_api_provider.dart';
 import 'package:derash/data_providers/db_providers/user_db_provider.dart';
+import 'package:derash/data_providers/user_provider.dart';
 import 'package:derash/models/user_model.dart';
 
 class UserRepository {
   final UserAuthApiDataProvider userDataFromAuthApiProvider;
   final UserApiDataProvider userDataFromUserApiProvider;
   final UserDBProvider dbProvider;
-  UserRepository(this.userDataFromAuthApiProvider,
-      this.userDataFromUserApiProvider, this.dbProvider);
 
-  Future<User> create(User user) async {
-    // if (userDataFromAuthApiProvider.signUpUser(user) != Null) {
-    // dbProvider.createUser(user);
+
+  UserRepository(this.userDataFromUserApiProvider,
+      this.userDataFromAuthApiProvider, this.dbProvider);
+  Future<User> register(User user) async {
+
     return userDataFromAuthApiProvider.signUpUser(user);
-    // }
+
   }
 
-  Future<User> login(String email , String password) async {
-    // if (userDataFromAuthApiProvider.signInUser(user) != Null) {}
-    User userDataFromApi = userDataFromAuthApiProvider.signInUser(email,password) as User;
-    // dbProvider.updateUser(userDataFromApi);
-    dbProvider.createUser(userDataFromApi);
-
+  Future<User> login(String email, String password) async {
+    User userDataFromApi =
+        userDataFromAuthApiProvider.signInUser(email, password) as User;
     return userDataFromApi;
   }
 
-  Future<User> logout(String token, User user) async {
-    dbProvider.deleteUser(user);
+  Future<User> logout(String token, User user, String id) async {
     return userDataFromAuthApiProvider.signOutUser(token);
   }
 
-  Future<User> getUsers(String token) async {
-     if (dbProvider.getAllUsers() == null ) {
-      // for user in UserApiDataProvider.getAllUser(token){
-        User usersFromApi = userDataFromUserApiProvider.getAllUser(token) as User;
-      create(usersFromApi);
-      return userDataFromUserApiProvider.getAllUser(token);
-      }
-      return dbProvider.getAllUsers();
-      // return reportApiDataProvider.getUserReport(token);
+  Future<List<User>> getUsers(String token) async {
+    final users = await dbProvider.getAllUser();
+    if (users.isNotEmpty) {
+      return users;
     }
-    // if (userDataFromUserApiProvider.getAllUser(token) != Null)
-    //   return userDataFromUserApiProvider.getAllUser(token);
-  
+    final usersFromApi = userDataFromUserApiProvider.getAllUser() as List<User>;      
+      dbProvider.insertAll(usersFromApi);
+    return usersFromApi;
+
+      }
   
 
-  Future<User> deleteUser(String token, String id, User user) async {
 
-    dbProvider.deleteUser(user);
-    return userDataFromUserApiProvider.deleteUser(id , token);
+  Future<String> deleteUser(String token, String id, User user) async {
+    await dbProvider.deleteUser(id);
+    return await userDataFromUserApiProvider.deleteUser(id);
   }
 
-  Future<User> updateUser(String token, String id, User user) async {
-  dbProvider.updateUser(user);
-  return userDataFromUserApiProvider.update(id, token, user);
+  Future<List<User>> updateUser(String token, String id, User user) async {
+    await dbProvider.updateUser(id , user);
+    return await userDataFromUserApiProvider.updateUser(id, user);
   }
 }

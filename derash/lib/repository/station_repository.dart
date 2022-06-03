@@ -7,36 +7,39 @@ class StationRepository {
   final StationDBProvider dbProvider;
   StationRepository(this.stationApiDataProvider, this.dbProvider);
 //send report
-  Future<Station> createStation(Station station, String token) async {
-    dbProvider.createStation(station);
-    return stationApiDataProvider.registerStation(station, token);
+  Future<List<Station>> createStation(Station station, String token) async {
+    // dbProvider.createStation(station);
+    return await stationApiDataProvider.addStation(station);
   }
 
 // get stations
-  Future<Future<Object?>> getStations(Station station, String token) async {
-    // if (stationApiDataProvider.getAllStations(token) != Null) {
-    //   return stationApiDataProvider.getAllStations(token);
-    // }
-    return dbProvider.getStation(station);
+  Future<List<Station>> getStations(Station station, String token) async {
+    final stations = await dbProvider.getAllStations();
+    if (stations.isNotEmpty) {
+      return stations;
+    }
+    final stationsFromApi = await stationApiDataProvider.getAllStations();
+
+    await dbProvider.addStations(stationsFromApi);
+    return stationsFromApi;
   }
 
 //delete station
-  Future<Future<Object?>> deleteStation(
-      String token, String id, Station station) async {
+  Future<String> deleteStation(String token, String id) async {
     // if (stationApiDataProvider.deleteStation(id ,token) != Null) {
-    dbProvider.deleteStation(station);
+    await dbProvider.deleteStation(id);
 
-    return stationApiDataProvider.deleteStation(id, token);
+    return await stationApiDataProvider.deleteStation(id);
     // }
   }
 
 //update stations
-  Future<Future<Object?>> updateStation(
+  Future<List<Station>> updateStation(
       String id, String token, Station station) async {
     // if (stationApiDataProvider.updateStation(id, token, station) != Null) {
-    dbProvider.updateStation(station);
+    await dbProvider.updateStation(id, station);
 
-    return stationApiDataProvider.updateStation(id, token, station);
+    return await stationApiDataProvider.updateStation(id, station);
     // }
   }
 }

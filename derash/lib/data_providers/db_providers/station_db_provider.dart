@@ -1,11 +1,12 @@
 import 'dart:io';
+import 'package:derash/data_providers/station_provider.dart';
 import 'package:derash/models/station_model.dart';
 import 'package:path/path.dart';
 
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 
-class StationDBProvider {
+class StationDBProvider implements StationProvider {
   static Database? _database;
   static final StationDBProvider db = StationDBProvider._();
 
@@ -45,40 +46,61 @@ class StationDBProvider {
     });
   }
 
-  // Insert station on database
-  createStation(Station newStaion) async {
-    final db = await database;
-    final res = await db?.insert('Station', newStaion.toJson());
-
-    return res;
+  Future<List<Station>> addStations(List<Station> stations) async {
+    try {
+      final db = await database;
+      for (final station in stations) {
+        final res = await db?.insert('Station', station.toJson());
+      }
+      return getAllStations();
+    } catch (e) {
+      throw Exception("adding station field");
+    }
   }
 
-//get stations
-  Future<List<Object>> getStation(Station station) async {
-    final db = await database;
-    final res =
-        await db?.rawQuery("SELECT * FROM Station ");
-
-    List<Object> list =
-        res!.isNotEmpty ? res.map((c) => Station.fromJson(c)).toList() : [];
-
-    return list;
+  @override
+  Future<List<Station>> addStation(Station stations) {
+ 
+    final allstations = getAllStations();
+    return allstations;
   }
 
-//update station
-    Future<int?> updateStation(Station station) async {
-    final db = await database;
-    final res = await db?.rawUpdate(
-        "UPDATE Customer SET stationame =  ${station.stationame} , stationemail = ${station.stationemail} , stationlocation = ${station.stationlocation} WHERE id = ${station.id}");
-
-    return res;
+  @override
+  Future<String> deleteStation(String id) async {
+    try {
+      final db = await database;
+      await db?.delete("Station", where: 'id = ?', whereArgs: [id]);
+      const message = 'Station deleted succefful';
+      return message;
+    } catch (e) {
+      throw Exception("deleting station field");
+    }
   }
 
-// delete station
-    Future<int?> deleteStation(Station station) async {
-    final db = await database;
-    final res = await db?.delete("Station", where: 'id = ?', whereArgs: [station.id]);
+  @override
+  Future<List<Station>> getAllStations() async {
+    try {
+      final db = await database;
+      final res = await db?.rawQuery("SELECT * FROM Station ");
 
-    return res;
+      List<Station> list =
+          res!.isNotEmpty ? res.map((c) => Station.fromJson(c)).toList() : [];
+      return list;
+    } catch (e) {
+      throw Exception("getting all station field");
+    }
+  }
+
+  @override
+  Future<List<Station>> updateStation(String id, Station station) async {
+    try {
+      final db = await database;
+      final res = await db?.rawUpdate(
+          "UPDATE Customer SET stationame =  ${station.stationame} , stationemail = ${station.stationemail} , stationlocation = ${station.stationlocation} WHERE id = ${id}");
+      final stations = getAllStations();
+      return stations;
+    } catch (e) {
+      throw Exception("updating all station field");
+    }
   }
 }

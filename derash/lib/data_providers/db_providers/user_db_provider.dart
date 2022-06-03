@@ -5,7 +5,9 @@ import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 
-class UserDBProvider {
+import '../user_provider.dart';
+
+class UserDBProvider implements UserProvider {
   static Database? _database;
   static final UserDBProvider db = UserDBProvider._();
 
@@ -38,58 +40,56 @@ class UserDBProvider {
     });
   }
 
-  // Insert user on database
-  createUser(User newUser) async {
-    final db = await database;
-    final res = await db?.insert('User', newUser.toJson());
-
-    return res;
-  }  
-  //get user
-  getUser(User user) async {
-    final db = await database;
-    final res =
-        await db?.rawQuery("SELECT * FROM User WHERE id = ${user.id}");
-
-    // List<Object> list =
-        // res!.isNotEmpty ? res.map((c) => User.fromJson(c)).toList() : [];
-    return res;
-  }
-  // Delete  user
-  deleteUser(User user) async {
-    final db = await database;
-    final res = await db?.delete("User", where: 'id = ?', whereArgs: [user.id]);
-
-    return res;
-  }
-  // logoutUser(User user) async {
-  //    final db = await database;
-  //   final res = await db?.rawUpdate(
-  //       "UPDATE User SET ,token = ${null} WHERE id = ${user.id}");
-
-  //   return res;
-  // }
-  //user update
-  updateUser(User user) async {
-    final db = await database;
-    final res = await db?.rawUpdate(
-        "UPDATE User SET username =  ${user.username} , email = ${user.email} , password = ${user.password} ,token = ${user.token}WHERE id = ${user.id}");
-
-    return res;
+  Future<void> insertAll(List<User> users) async {
+    try {
+      final db = await database;
+      // final batch = db?.batch();
+      for (final user in users) {
+        final res = await db?.insert('Report', user.toJson());
+        
+      }
+      // return res;
+    } catch (e) {
+      throw Exception("deleting user field");
+    }
   }
 
-//get all users
-  getAllUsers() async {
-    final db = await database;
-    final res = await db?.rawQuery("SELECT * FROM User");
-
-    // List<User>? list =
-        // res!.isNotEmpty ? res.map((c) => User.fromJson(c)).toList() : [];
-
-    return res;
+  @override
+  Future<String> deleteUser(String id) async {
+    try {
+      final db = await database;
+      await db?.delete("User", where: 'id = ?', whereArgs: [id]);
+      const message = 'user deleted seccesful';
+      return message;
+    } catch (e) {
+      throw Exception("deleting user field");
+    }
   }
-  Future close() async {
-    final db = await database;
-    db?.close();
+
+  @override
+  Future<List<User>> getAllUser() async {
+    try {
+      final db = await database;
+      final res = await db?.rawQuery("SELECT * FROM User ");
+
+      List<User> list =
+          res!.isNotEmpty ? res.map((c) => User.fromJson(c)).toList() : [];
+      return list;
+    } catch (e) {
+      throw Exception("getting users field");
+    }
+  }
+
+  @override
+  Future<List<User>> updateUser(String id, User user) async {
+    try {
+      final db = await database;
+      await db?.rawUpdate(
+          "UPDATE User SET username =  ${user.username} , email = ${user.email} , password = ${user.password} ,token = ${user.token}WHERE id = ${user.id}");
+      final users = getAllUser();
+      return users;
+    } catch (e) {
+      throw Exception("updating user Field");
+    }
   }
 }

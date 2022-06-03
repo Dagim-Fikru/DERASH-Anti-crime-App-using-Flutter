@@ -1,11 +1,14 @@
+import 'dart:convert';
 import 'dart:io';
+import 'package:derash/data_providers/report_provider.dart';
 import 'package:derash/models/report_model.dart';
+import 'package:derash/models/stats.dart';
 import 'package:path/path.dart';
 
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 
-class ReportDBProvider {
+class ReportDBProvider implements ReportProvider {
   static Database? _database;
   static final ReportDBProvider db = ReportDBProvider._();
 
@@ -21,6 +24,10 @@ class ReportDBProvider {
           'description TEXT NOT NULL,'
           'description TEXT NOT NULL,'
           'img TEXT'
+          ')');
+      await _database?.execute('CREATE TABLE Stats('
+          'name TEXT PRIMARY KEY,'
+          'value INT NOT NULL,'
           ')');
       return _database;
     }
@@ -45,61 +52,88 @@ class ReportDBProvider {
           'description TEXT NOT NULL,'
           'image TEXT,'
           ')');
+      await _database?.execute('CREATE TABLE Stats('
+          'name TEXT PRIMARY KEY,'
+          'value INT NOT NULL,'
+          ')');
     });
   }
 
-  // Insert report on database
-  createReport(Report newReport) async {
-    final db = await database;
-    final res = await db?.insert('Report', newReport.toJson());
-
-    return res;
+  Future<List<Report>> insertReports(List<Report> reports) async {
+    try {
+      final db = await database;
+      for (final report in reports) {
+        await db?.insert('Report', report.toJson());
+      }
+      final allReports = getReports();
+      return allReports;
+    } catch (e) {
+      throw Exception("inserting report field");
+    }
   }
 
+  Future<List<Stats>> insertStats(List<Stats> stats) async {
+    try {
+      final db = await database;
+      for (final stat in stats) {
+        final res = await db?.insert('Report', stat.toJson());
+      }
 
-
-//get user report
-  Future<List<Map<String, Object?>>?> getReport(Report report) async {
-    final db = await database;
-    final res =
-        await db?.rawQuery("SELECT * FROM Report WHERE id = ${report.userId}");
-
-    // List<Object> list =
-    //     res!.isNotEmpty ? res.map((c) => Report.fromJson(c)).toList() : [];
-
-    return res;
+      return getStatReport();
+    } catch (e) {
+      throw Exception("inserting report field");
+    }
   }
 
-//get all report
-  Future<List<Report>> getAllReports() async {
-    final db = await database;
-    final res = await db?.rawQuery("SELECT * FROM Report");
+  @override
+  Future<List<Report>> getReports() async {
+    try {
+      final db = await database;
+      final res = await db?.rawQuery("SELECT * FROM Report");
 
-    List<Report>? list =
-        res!.isNotEmpty ? res.map((c) => Report.fromJson(c)).toList() : [];
+      List<Report>? list =
+          res!.isNotEmpty ? res.map((c) => Report.fromJson(c)).toList() : [];
 
-    return list;
+      return list;
+    } catch (e) {
+      throw Exception("getting reports field");
+    }
   }
 
-  // get report stats
-  // Future<Map> getStats() async {
-  //   final db = await database;
-  //   final res = await db?.rawQuery("SELECT * FROM Report");
-  //   var locations = [];
-  //   var map = Map();
-  //   for (int i = 0; i < res!.length; i++) {
-  //     locations.add(res[i]);
-  //     // interate througn the object in the i th index and get location
-  //   }
+  @override
+  Future<List<Stats>> getStatReport() async {
+    try {
+      final db = await database;
+      final res = await db?.rawQuery("SELECT * FROM Stats");
 
-  //   for (var element in locations) {
-  //     if (!map.containsKey(element)) {
-  //       map[element] = 1;
-  //     } else {
-  //       map[element] += 1;
-  //     }
-  //   }
+      List<Stats> stats = res?.map((c) => Stats.fromJson(c)) as List<Stats>;
 
-  //   return map;
+      return stats;
+    } catch (e) {
+      throw Exception("getting stats report field");
+    }
+  }
+
+  @override
+  Future<List<Report>> getUserReport(String id) async {
+    try {
+      final db = await database;
+      final res = await db?.rawQuery("SELECT * FROM Report WHERE id = $id");
+
+      List<Report> list =
+          res!.isNotEmpty ? res.map((c) => Report.fromJson(c)).toList() : [];
+
+      return list;
+    } catch (e) {
+      throw Exception("getting user report field");
+    }
+  }
+
+  // @override
+  // Future<Report> sendReport(
+  //   Report report,
+  // ) {
+  //   // TODO: implement sendReport
+  //   throw UnimplementedError();
   // }
 }
