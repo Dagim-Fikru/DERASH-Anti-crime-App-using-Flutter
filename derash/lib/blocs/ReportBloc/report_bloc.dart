@@ -5,7 +5,7 @@ import 'package:derash/model/Report.dart';
 import 'package:derash/model/User.dart';
 import 'package:derash/model/location.dart';
 import 'package:derash/repository/report_repository.dart';
-import 'package:derash/repository/station_repository.dart';
+// import 'package:derash/repository/station_repository.dart';
 import 'package:derash/repository/user_repository.dart';
 import 'package:equatable/equatable.dart';
 
@@ -65,4 +65,8 @@ class ReportBloc extends Bloc<ReportEvent, ReportState> {
       }
     });
   }
+}
+
+class StationRepository {
+  fetchAll() {}
 }

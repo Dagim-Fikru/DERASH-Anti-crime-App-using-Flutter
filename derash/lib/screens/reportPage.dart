@@ -1,7 +1,8 @@
 // ignore_for_file: file_names, prefer_const_constructors, camel_case_types, unused_field, unused_element, prefer_const_literals_to_create_immutables, deprecated_member_use, body_might_complete_normally_nullable, curly_braces_in_flow_control_structures, avoid_print, avoid_unnecessary_containers, dead_code, unused_local_variable, prefer_typing_uninitialized_variables, unused_import, avoid_web_libraries_in_flutter
 import 'dart:io';
+import 'package:derash/screens/ProfileUpdate.dart';
 import 'package:derash/screens/history.dart';
-// import 'package:derash/main.dart';
+import 'ProfileUpdate.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:bloc/bloc.dart';
@@ -11,16 +12,18 @@ import 'package:image_picker/image_picker.dart';
 
 import 'package:derash/blocs/ReportBloc/report_bloc.dart';
 
-class repotPage extends StatefulWidget {
-  const repotPage({Key? key}) : super(key: key);
+import '../main.dart';
+
+class ReportPage extends StatefulWidget {
+  const ReportPage({Key? key}) : super(key: key);
 
   @override
-  State<repotPage> createState() => _repotPageState();
+  State<ReportPage> createState() => _ReportPageState();
 }
 
-class _repotPageState extends State<repotPage> {
+class _ReportPageState extends State<ReportPage> {
   late String _location;
-  late String _date;
+  late DateTime _date = DateTime.now();
   late String _incident;
   File? image;
   Future pickImage(ImageSource source) async {
@@ -36,7 +39,6 @@ class _repotPageState extends State<repotPage> {
   }
 
   final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
-  DateTime dateTime = DateTime(2022, 05, 27);
 
   Widget _buildLocationField() {
     List<String> locations = ['4kilo', 'Bole', 'Piassa', '5kilo', 'Megenagna'];
@@ -90,7 +92,7 @@ class _repotPageState extends State<repotPage> {
   Widget _buildDateField() {
     Future<DateTime?> pickDate() => showDatePicker(
         context: context,
-        initialDate: dateTime,
+        initialDate: _date,
         firstDate: DateTime(1990),
         lastDate: DateTime(2040));
     return Row(mainAxisAlignment: MainAxisAlignment.start, children: [
@@ -112,9 +114,9 @@ class _repotPageState extends State<repotPage> {
             onPressed: () async {
               final date = await pickDate();
               if (date == null) return;
-              setState(() => dateTime = date);
+              setState(() => _date = date);
             },
-            child: Text('${dateTime.year}/${dateTime.month}/${dateTime.day}'),
+            child: Text('${_date.year}/${_date.month}/${_date.day}'),
           )
         ],
       ),
@@ -209,131 +211,116 @@ class _repotPageState extends State<repotPage> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<ReportBloc, ReportState>(
-      builder: (context, state) {
-        if (state is ReportInitial) {
-          return Center(
-            child: CircularProgressIndicator(),
-          );
-        }
-        if (state is loadingError) {
-          return Center(
-            child: ElevatedButton(
+    // return BlocBuilder<ReportBloc, ReportState>(
+    //   builder: (context, state) {
+    //     if (state is ReportInitial) {
+    //       return Center(
+    //         child: CircularProgressIndicator(),
+    //       );
+    //     }
+    //     if (state is loadingError) {
+    //       return Center(
+    //         child: ElevatedButton(
+    //             onPressed: () {
+    //               context.read<ReportBloc>().add(getLocation());
+    //             },
+    //             child: Text('Retry')),
+    //       );
+    //     }
+    //     if (state is ReportLoaded)
+    //     // else
+    //     {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Report page'),
+        backgroundColor: Colors.brown,
+        centerTitle: true,
+      ),
+      backgroundColor: Color.fromARGB(255, 44, 44, 44),
+      body: Container(
+        margin: EdgeInsets.all(24),
+        child: Form(
+          key: _formkey,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: <Widget>[
+              _buildLocationField(),
+              _buildDateField(),
+              _buildFileUpload(),
+              _buildIncidentField(),
+              // SizedBox(height: 50),
+              MaterialButton(
+                minWidth: double.infinity,
+                height: 60,
                 onPressed: () {
-                  context.read<ReportBloc>().add(getLocation());
+                  if (!_formkey.currentState!.validate()) {
+                    return;
+                  }
+                  _formkey.currentState?.save();
                 },
-                child: Text('Retry')),
-          );
-        }
-        if (state is ReportLoaded)
-        // else
-        {
-          return Scaffold(
-            appBar: AppBar(
-              title: Text('Report page'),
-              backgroundColor: Colors.brown,
-              centerTitle: true,
-            ),
-            backgroundColor: Color.fromARGB(255, 44, 44, 44),
-            body: Container(
-              margin: EdgeInsets.all(24),
-              child: Form(
-                key: _formkey,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: <Widget>[
-                    _buildLocationField(),
-                    _buildDateField(),
-                    _buildFileUpload(),
-                    _buildIncidentField(),
-                    // SizedBox(height: 50),
-                    ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        padding: EdgeInsets.symmetric(
-                            horizontal: 150.0, vertical: 20.0),
-                        primary: Color.fromARGB(255, 43, 171, 200),
-                        shape: StadiumBorder(),
-                      ),
-                      onPressed: () {
-                        if (!_formkey.currentState!.validate()) {
-                          return;
-                        }
-                        _formkey.currentState?.save();
-                      },
-                      child: Text(
-                        'Submit',
-                        style: TextStyle(
-                            color: Color.fromARGB(255, 255, 255, 255),
-                            fontSize: 20,
-                            fontStyle: FontStyle.italic,
-                            fontWeight: FontWeight.bold),
-                      ),
-                    )
-                  ],
+                color: const Color(0xff0095FF),
+                elevation: 0,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(50),
+                ),
+                child: const Text(
+                  "Submit",
+                  style: TextStyle(
+                    fontWeight: FontWeight.w600,
+                    fontSize: 18,
+                    color: Colors.white,
+                  ),
                 ),
               ),
-            ),
-            drawer: Drawer(
-              child: Container(
-                color: Color.fromARGB(255, 15, 9, 101),
+            ],
+          ),
+        ),
+      ),
+      drawer: Drawer(
+        child: Container(
+          color: Color.fromARGB(255, 15, 9, 101),
+          child: Column(
+            children: [
+              Container(
+                color: Color.fromARGB(255, 3, 44, 78),
+                width: double.infinity,
+                height: 200,
+                padding: const EdgeInsets.only(top: 20.0),
                 child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        'User Name Here',
+                        style: TextStyle(color: Colors.white, fontSize: 20),
+                      ),
+                      Text(
+                        'user@gmail.com',
+                        style: TextStyle(color: Colors.grey[200], fontSize: 15),
+                      ),
+                    ]),
+              ),
+              Container(
+                padding: EdgeInsets.only(top: 15),
+                child: Column(
+                  // list of menus
                   children: [
-                    Container(
-                      color: Color.fromARGB(255, 3, 44, 78),
-                      width: double.infinity,
-                      height: 200,
-                      padding: const EdgeInsets.only(top: 20.0),
-                      child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            //top of the drawer that is the user photo and name
-                            // Container(
-                            //   margin: const EdgeInsets.only(bottom: 10),
-                            //   height: 70,
-                            //   decoration: const BoxDecoration(
-                            //     shape: BoxShape.circle,
-                            //     image: DecorationImage(
-                            //       image: NetworkImage(
-                            //           'https://as2.ftcdn.net/v2/jpg/01/64/19/61/1000_F_164196196_Sq7LZmLMqf7mrV6MeDo7UdBfJoAIyBsG.jpg'),
-                            //     ),
-                            //   ),
-                            // ),
-                            Text(
-                              'User Name Here',
-                              style:
-                                  TextStyle(color: Colors.white, fontSize: 20),
-                            ),
-                            Text(
-                              'user@gmail.com',
-                              style: TextStyle(
-                                  color: Colors.grey[200], fontSize: 15),
-                            ),
-                          ]),
-                    ),
-                    Container(
-                      padding: EdgeInsets.only(top: 15),
-                      child: Column(
-                        // list of menus
-                        children: [
-                          // menus(1, "Help", Icons.help_center),
-                          menus(1, "History", Icons.history),
-                          menus(2, "Profile", Icons.person),
-                          menus(3, "Logout", Icons.logout),
-                        ],
-                      ),
-                    ),
+                    // menus(1, "Help", Icons.help_center),
+                    menus(1, "History", Icons.history),
+                    menus(2, "Profile", Icons.person),
+                    menus(3, "Logout", Icons.logout),
                   ],
                 ),
               ),
-            ),
-          );
-        } else {
-          return Center(
-            child: Text('nothing'),
-          );
-        }
-      },
+            ],
+          ),
+        ),
+      ),
     );
+    // } else {
+    //   return Center(
+    //     child: Text('nothing'),
+    //   );
+    // }
   }
 
   Widget menus(int id, String title, IconData icon) {
@@ -346,10 +333,10 @@ class _repotPageState extends State<repotPage> {
             Navigator.of(context)
                 .push(MaterialPageRoute(builder: (context) => historyPage()));
           }
-          // if (id == 2) {
-          //   Navigator.of(context)
-          //       .push(MaterialPageRoute(builder: (context) => MyApp()));
-          // }
+          if (id == 2) {
+            Navigator.of(context).push(
+                MaterialPageRoute(builder: (context) => ProfileSetting()));
+          }
         },
         child: Padding(
           padding: EdgeInsets.all(15.0),
