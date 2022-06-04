@@ -1,3 +1,5 @@
+// ignore_for_file: unused_import, prefer_const_constructors
+
 import 'package:derash/blocs/auth/signup_bloc/sign_up_bloc.dart';
 import 'package:derash/blocs/dashboardbloc/dashboard_bloc.dart';
 import 'package:derash/blocs/stationbloc/station_bloc.dart';
@@ -5,8 +7,6 @@ import 'package:derash/data_providers/api_providers/auth.dart';
 import 'package:derash/data_providers/api_providers/user_api_provider.dart';
 import 'package:derash/data_providers/db_providers/user_db_provider.dart';
 import 'package:derash/repository/report_repository.dart';
-
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -31,7 +31,6 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-
   final _stationRepository = StationRepository();
   final _userRepository = UserRepository();
   final _reportRepository = ReportRepository();
@@ -48,7 +47,8 @@ class _MyAppState extends State<MyApp> {
         providers: [
           BlocProvider<StationBloc>(
               create: (context) => StationBloc(_stationRepository)),
-          BlocProvider<UserBloc>(create: (context) => UserBloc(_userRepository)),
+          BlocProvider<UserBloc>(
+              create: (context) => UserBloc(_userRepository)),
           BlocProvider<DashboardBloc>(
               create: (context) =>
                   DashboardBloc(_reportRepository, _userRepository)),

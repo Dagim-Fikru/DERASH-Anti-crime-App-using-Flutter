@@ -26,8 +26,8 @@ class _ReportScreenState extends State<ReportScreen> {
   void didChangeDependencies() {
     final loginstate = BlocProvider.of<LoginBloc>(context, listen: true).state;
     late User user;
-    if(loginstate is Authenticated){
-      user =loginstate.user;
+    if (loginstate is Authenticated) {
+      user = loginstate.user;
     }
     context.read<ReportBloc>().add(getLocation(user));
     super.didChangeDependencies();
@@ -225,8 +225,8 @@ class _ReportScreenState extends State<ReportScreen> {
   Widget build(BuildContext context) {
     final loginstate = BlocProvider.of<LoginBloc>(context, listen: true).state;
     late User user;
-    if(loginstate is Authenticated){
-      user =loginstate.user;
+    if (loginstate is Authenticated) {
+      user = loginstate.user;
     }
     return BlocBuilder<ReportBloc, ReportState>(
       builder: (context, state) {
