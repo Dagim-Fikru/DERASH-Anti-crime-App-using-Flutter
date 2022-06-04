@@ -11,13 +11,9 @@ import 'package:derash/models/stats.dart';
 
 class ReportApiDataProvider implements ReportProvider {
   static const String _baseUrl = "http://localhost:5000/api/station/";
-  final String token;
-  ReportApiDataProvider(
-    this.token
-  );
 
   @override
-  Future<List<Report>> getReports()async {
+  Future<List<Report>> getReports(String token)async {
     final response =
         await http.get(Uri.parse(_baseUrl), headers: {"token": token});
 
@@ -33,7 +29,7 @@ class ReportApiDataProvider implements ReportProvider {
   }
 
   @override
-  Future<List<Stats>> getStatReport() async{
+  Future<List<Stats>> getStatReport(String token) async{
     final response =
         await http.get(Uri.parse("$_baseUrl/stats"), headers: {"token": token});
 
@@ -50,7 +46,7 @@ class ReportApiDataProvider implements ReportProvider {
   }
   
   @override
-  Future<List<Report>> getUserReport(String id)async {
+  Future<List<Report>> getUserReport(String id,String token)async {
      final response = await http
         .get(Uri.parse("$_baseUrl/savedreport"), headers: {"token": token});
 
@@ -68,7 +64,7 @@ class ReportApiDataProvider implements ReportProvider {
   }
   
   
-  Future<Report> sendReport(Report report) async {
+  Future<Report> sendReport(Report report,String token) async {
       final http.Response response =
         await http.post(Uri.parse("$_baseUrl/sendreport"),
             headers: {"token": token},

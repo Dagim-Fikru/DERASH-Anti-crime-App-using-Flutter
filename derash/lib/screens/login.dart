@@ -54,6 +54,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         child: Column(
                           children: [
                             TextFormField(
+                              controller: userCtrl,
                                 decoration: ThemeHelper().textInputDecoration(
                                     'User Name', 'Enter your user name'),
                                 validator: (String? userName) {
@@ -65,6 +66,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               height: 30.0,
                             ),
                             TextFormField(
+                              controller: passCtrl,
                                 obscureText: true,
                                 decoration: ThemeHelper().textInputDecoration(
                                     'Password', 'Enter your password'),
@@ -112,7 +114,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                           final formValid =
                                               formKey.currentState!.validate();
                                           if (!formValid) return;
-
+                                          print("userctrl" + userCtrl.text);
+                                          print("passwordctrl" + passCtrl.text);
                                           final authBloc =
                                               BlocProvider.of<LoginBloc>(
                                                   context);

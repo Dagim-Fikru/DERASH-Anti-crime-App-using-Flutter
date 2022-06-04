@@ -9,7 +9,7 @@ class DashboardLoading extends DashboardState {
 }
 
 class ReportAndUsersLoaded extends DashboardState {
-  final Map<String, int> stat;
+  final List<Stats> stat;
   final List<User> users;
 
   ReportAndUsersLoaded(this.stat, this.users);

@@ -8,7 +8,8 @@ class UserAuthApiDataProvider {
   static const String _baseUrl = "http://localhost:5000/api/auth/";
 //register
   Future<User> signUpUser(User user) async {
-    final http.Response response =
+    
+        final http.Response response =
         await http.post(Uri.parse("$_baseUrl/register"),
             headers: <String, String>{"Content-Type": "application/json"},
             body: jsonEncode({
@@ -27,6 +28,9 @@ class UserAuthApiDataProvider {
 
 //login
   Future<User> signInUser(String  email , String password) async {
+    print("user is about to loggin");
+    print("email" + email );
+    print("password" + password );
     final http.Response response = await http.post(Uri.parse("$_baseUrl/login"),
         headers: <String, String>{"Content-Type": "application/json"},
         body: jsonEncode({
@@ -34,7 +38,11 @@ class UserAuthApiDataProvider {
           "password":password,
         }));
 
-    if (response.statusCode == 201) {
+    if (response.statusCode == 200) {
+      // print(User.fromJson(jsonDecode(response.body)));
+      print("okkkkk");
+      print(response.body);
+      print(jsonDecode(response.body));
       return User.fromJson(jsonDecode(response.body));
     }
     {

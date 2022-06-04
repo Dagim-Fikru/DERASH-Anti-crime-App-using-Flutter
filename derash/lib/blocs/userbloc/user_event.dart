@@ -6,7 +6,8 @@ abstract class UserEvent extends Equatable {
 }
 
 class LoadUsers extends UserEvent {
-  const LoadUsers();
+  final User user;
+  const LoadUsers(this.user);
   @override
   List<Object?> get props => [];
 }

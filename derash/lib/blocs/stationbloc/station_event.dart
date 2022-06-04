@@ -6,31 +6,35 @@ abstract class StationEvent extends Equatable {
 }
 
 class LoadStations extends StationEvent {
-  const LoadStations();
+  final User user;
+  const LoadStations(this.user);
   @override
   List<Object?> get props => [];
 }
 
 class CreateStation extends StationEvent {
   final Station station;
-  const CreateStation(this.station);
+  final User user;
+  const CreateStation(this.station ,this.user);
 
   @override
   List<Object?> get props => [station];
 }
 
 class UpdateStation extends StationEvent {
-  final int id;
+  final String id;
   final Station station;
-  const UpdateStation(this.station, this.id);
+  final User user;
+  const UpdateStation(this.station, this.id, this.user);
 
   @override
   List<Object?> get props => [id, station];
 }
 
 class DeleteStation extends StationEvent {
-  final int id;
-  const DeleteStation(this.id);
+  final String id;
+  final User user;
+  const DeleteStation(this.id, this.user);
 
   @override
   List<Object?> get props => [id];

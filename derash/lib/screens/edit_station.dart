@@ -1,8 +1,10 @@
 import 'package:derash/blocs/stationbloc/station_bloc.dart';
+import 'package:derash/models/user.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../blocs/auth/login_bloc/login_bloc.dart';
 import '../models/station.dart';
 
 class EditStationScreen extends StatefulWidget {
@@ -26,13 +28,18 @@ class _EditStationScreenState extends State<EditStationScreen> {
     super.initState();
     final originalItem = widget.originalItem;
     if (originalItem != null) {
-      _locationController.text = originalItem.location;
-      _emailController.text = originalItem.email;
+      _locationController.text = originalItem.stationlocation;
+      _emailController.text = originalItem.stationemail;
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final loginstate = BlocProvider.of<LoginBloc>(context, listen: true).state;
+    late User user;
+    if(loginstate is Authenticated){
+      user =loginstate.user;
+    }
     return Scaffold(
         appBar: AppBar(
           title: Text(widget.originalItem != null ? 'Editing...' : 'Creating'),
@@ -41,17 +48,17 @@ class _EditStationScreenState extends State<EditStationScreen> {
               icon: const Icon(Icons.check),
               onPressed: () {
                 final newStation = Station(
-                  id: widget.originalItem?.id ?? 1,
-                  location: _locationController.text,
-                  email: _emailController.text,
+                  id: widget.originalItem?.id ?? '1',
+                  stationlocation: _locationController.text,
+                  stationemail: _emailController.text,
                 );
                 if (widget.originalItem != null) {
                   BlocProvider.of<StationBloc>(context)
-                      .add(UpdateStation(newStation, newStation.id));
+                      .add(UpdateStation(newStation, newStation.id!,user));
                 }
                 if (widget.originalItem == null) {
                   BlocProvider.of<StationBloc>(context)
-                      .add(CreateStation(newStation));
+                      .add(CreateStation(newStation,user));
                 }
               },
             )

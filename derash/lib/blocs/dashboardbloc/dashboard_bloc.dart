@@ -1,10 +1,11 @@
 import 'package:bloc/bloc.dart';
+import 'package:derash/models/stats.dart';
 import 'package:derash/models/user.dart';
-import 'package:derash/repository/user_repository.dart';
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
 
 import '../../repository/report_repository.dart';
+import '../../repository/user_reporitory.dart';
 
 part 'dashboard_event.dart';
 part 'dashboard_state.dart';
@@ -17,8 +18,9 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
     on<LoadReportandUsers>((event, emit) async {
       emit(DashboardLoading());
       try {
-        final stat = await reportRepository.getStat();
-        final users = await userRepository.fetchAll();
+        final stat = await reportRepository.getStats(event.user.token!);
+        final users = await userRepository.getUsers(event
+        .user.token!);
         emit(ReportAndUsersLoaded(stat, users));
       } catch (error) {
         emit(LoadingFaild(error));

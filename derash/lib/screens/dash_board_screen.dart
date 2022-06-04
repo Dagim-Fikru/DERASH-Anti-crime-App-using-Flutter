@@ -1,8 +1,14 @@
+import 'package:derash/models/user.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../blocs/auth/login_bloc/login_bloc.dart';
 import '../blocs/dashboardbloc/dashboard_bloc.dart';
+import '../components/admin.cards.dart';
+import '../components/admin.drawer.dart';
+import '../components/admin.listview.dart';
+import '../components/admin.piechart.dart';
 
 class DashBoardScreen extends StatefulWidget {
   const DashBoardScreen({Key? key}) : super(key: key);
@@ -14,7 +20,13 @@ class DashBoardScreen extends StatefulWidget {
 class _DashBoardScreenState extends State<DashBoardScreen> {
   @override
   void didChangeDependencies() {
-    context.read<DashboardBloc>().add(LoadReportandUsers());
+    final loginState = BlocProvider.of<LoginBloc>(context, listen: true).state;
+   late User user;
+    if(loginState is Authenticated){
+      user = loginState.user; 
+    }
+
+    context.read<DashboardBloc>().add(LoadReportandUsers(user));
     super.didChangeDependencies();
   }
 
@@ -27,16 +39,16 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
         }
         if (state is ReportAndUsersLoaded) {
           return Scaffold(
-              // drawer: const AdminDrawer(),
+              drawer: const AdminDrawer(),
               appBar: AppBar(
                 title: const Text("ADMIN DASHBOARD"),
               ),
-              body: const Center(child: Text('this is it')
-                  // Column(children: [
-                  // AdminPiechart(stat: state.stat),
-                  // const AdminCards(),
-                  // AdminListView(users: state.users)
-                  ));
+              body:  
+                   Column(children: [
+                 AdminPiechart(stat: state.stat),
+                  AdminCards(),
+                  AdminListView(users: state.users)
+                 ] ));
         } else {
           return Center(
               child: Column(children: [

@@ -5,44 +5,46 @@ import 'package:derash/data_providers/user_provider.dart';
 import 'package:derash/models/user.dart';
 
 class UserRepository {
-  final UserAuthApiDataProvider userDataFromAuthApiProvider;
-  final UserApiDataProvider userDataFromUserApiProvider;
-  final UserDBProvider dbProvider;
+  final UserAuthApiDataProvider userDataFromAuthApiProvider =
+      UserAuthApiDataProvider();
+  final UserApiDataProvider userDataFromUserApiProvider = UserApiDataProvider();
+  final UserDBProvider dbProvider = UserDBProvider();
 
-  UserRepository(this.userDataFromUserApiProvider,
-      this.userDataFromAuthApiProvider, this.dbProvider);
-      
+  UserRepository();
+
   Future<Future> register(User user) async {
     return userDataFromAuthApiProvider.signUpUser(user);
   }
 
   Future<User> login(String email, String password) async {
     User userDataFromApi =
-        userDataFromAuthApiProvider.signInUser(email, password) as User;
+        await userDataFromAuthApiProvider.signInUser(email, password);
+        print('temelsual');
     return userDataFromApi;
   }
 
-  Future<Future> logout(String token, User user, String id) async {
+  Future<Future> logout(String token) async {
     return userDataFromAuthApiProvider.signOutUser(token);
   }
 
   Future<List<User>> getUsers(String token) async {
-    final users = await dbProvider.getAllUser();
+    final users = await dbProvider.getAllUser(token);
     if (users.isNotEmpty) {
       return users;
     }
-    final usersFromApi = userDataFromUserApiProvider.getAllUser() as List<User>;
+    final usersFromApi =
+        userDataFromUserApiProvider.getAllUser(token) as List<User>;
     dbProvider.insertAll(usersFromApi);
     return usersFromApi;
   }
 
   Future<String> deleteUser(String token, String id, User user) async {
-    await dbProvider.deleteUser(id);
-    return await userDataFromUserApiProvider.deleteUser(id);
+    await dbProvider.deleteUser(id, token);
+    return await userDataFromUserApiProvider.deleteUser(id, token);
   }
 
   Future<List<User>> updateUser(String token, String id, User user) async {
-    await dbProvider.updateUser(id, user);
-    return await userDataFromUserApiProvider.updateUser(id, user);
+    await dbProvider.updateUser(id, user, token);
+    return await userDataFromUserApiProvider.updateUser(id, user, token);
   }
 }

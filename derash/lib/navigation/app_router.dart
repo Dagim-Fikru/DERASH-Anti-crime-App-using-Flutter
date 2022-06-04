@@ -1,5 +1,6 @@
 import 'package:derash/blocs/ReportBloc/report_bloc.dart';
 import 'package:derash/blocs/auth/login_bloc/login_bloc.dart';
+import 'package:derash/models/user.dart';
 import 'package:derash/screens/admin_screen.dart';
 import 'package:derash/screens/report_history.dart';
 import 'package:derash/screens/user_details.dart';
@@ -49,7 +50,7 @@ class AppRouter extends RouterDelegate
               name: "signupscreen",
               key: ValueKey("signupscreen"),
               child: SignUpScreen()),
-        if (loginstate is Authenticated && !loginstate.user.isAdmin)
+        if (loginstate is Authenticated && !loginstate.user.isAdmin!)
           const MaterialPage(
               name: "reportscreen",
               key: ValueKey("reportscreen"),
@@ -64,7 +65,7 @@ class AppRouter extends RouterDelegate
               name: "profilescreen",
               key: const ValueKey("profilescreen"),
               child: ReportHistoryScreen(reports: reportstate.reports)),
-        if (loginstate is Authenticated && loginstate.user.isAdmin)
+        if (loginstate is Authenticated && loginstate.user.isAdmin!)
           const MaterialPage(
               name: "adminscreen",
               key: ValueKey("adminscreen"),
@@ -91,14 +92,20 @@ class AppRouter extends RouterDelegate
               child: UserDetailsScreen(user: userstate.user))
       ],
       onPopPage: (Route<dynamic> route, result) {
+        final loginstate = BlocProvider.of<LoginBloc>(context, listen: true).state;
+          late User user;
+          if(loginstate is Authenticated){
+            user =loginstate.user;
+          }
         if (!route.didPop(result)) {
           return false;
         }
         if (route.settings.name == "creatingstation") {
-          context.read<StationBloc>().add(const LoadStations());
+          
+          context.read<StationBloc>().add(LoadStations(user));
         }
         if (route.settings.name == "editingstation") {
-          context.read<StationBloc>().add(const LoadStations());
+          context.read<StationBloc>().add(LoadStations(user));
         }
 
         return true;

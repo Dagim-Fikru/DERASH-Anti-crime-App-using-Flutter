@@ -2,13 +2,14 @@
 
 import 'package:bloc/bloc.dart';
 import 'package:derash/repository/report_repository.dart';
-import 'package:derash/repository/station_repositry.dart';
-import 'package:derash/repository/user_repository.dart';
+
 import 'package:equatable/equatable.dart';
 
 import '../../models/report.dart';
 import '../../models/station.dart';
 import '../../models/user.dart';
+import '../../repository/station_repository.dart';
+import '../../repository/user_reporitory.dart';
 
 part 'report_event.dart';
 part 'report_state.dart';
@@ -23,7 +24,7 @@ class ReportBloc extends Bloc<ReportEvent, ReportState> {
     on<getLocation>((event, emit) async {
       emit(ReportInitial());
       try {
-        final stations = await stationRepository.fetchAll();
+        final stations = await stationRepository.getStations(event.user.token!);
         emit(ReportLoaded(stations));
       } catch (error) {
         emit((loadingError(error)));
@@ -32,7 +33,7 @@ class ReportBloc extends Bloc<ReportEvent, ReportState> {
     on<submitReport>((event, emit) async {
       emit(ReportInitial());
       try {
-        await reportRepository.create(event.report);
+        await reportRepository.sendReport(event.report , event.user.token!);
         emit(submitSuccessful());
       } catch (error) {
         emit(loadingError(error));
@@ -41,7 +42,7 @@ class ReportBloc extends Bloc<ReportEvent, ReportState> {
     on<getHistory>((event, emit) async {
       emit(ReportInitial());
       try {
-        final reports = await reportRepository.fethById(event.user);
+        final reports = await reportRepository.getUserReport(event.user.id! , event.user.token!);
         emit(historyLoaded(reports));
       } catch (error) {
         emit(loadingError(error));

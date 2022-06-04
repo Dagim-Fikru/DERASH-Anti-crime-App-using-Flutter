@@ -1,6 +1,8 @@
+import 'package:derash/models/user.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../blocs/auth/login_bloc/login_bloc.dart';
 import '../blocs/stationbloc/station_bloc.dart';
 import '../components/station_tile.dart';
 
@@ -14,7 +16,12 @@ class StationListScreen extends StatefulWidget {
 class _StationListScreenState extends State<StationListScreen> {
   @override
   void didChangeDependencies() {
-    context.read<StationBloc>().add(const LoadStations());
+    final loginstate = BlocProvider.of<LoginBloc>(context, listen: true).state;
+    late User user;
+    if(loginstate is Authenticated){
+      user =loginstate.user;
+    }
+    context.read<StationBloc>().add( LoadStations(user));
     super.didChangeDependencies();
   }
 
@@ -38,39 +45,16 @@ class _StationListScreenState extends State<StationListScreen> {
                 itemCount: stations.length,
                 itemBuilder: (context, index) {
                   final item = stations[index];
-                  return Dismissible(
-                    key: Key(item.location),
-                    direction: DismissDirection.endToStart,
-                    background: Container(
-                      color: Colors.red,
-                      alignment: Alignment.centerRight,
-                      child: const Icon(
-                        Icons.delete_forever,
-                        color: Colors.white,
-                        size: 50.0,
-                      ),
+                  return InkWell(
+                    child: StationTile(
+                      key: Key(item.stationlocation),
+                      item: item,
                     ),
-                    onDismissed: (direction) {
+                    onTap: () {
                       context
                           .read<StationBloc>()
-                          .add(DeleteStation(stations[index].id));
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text('${item.location} dismissed'),
-                        ),
-                      );
+                          .add(SelectStation(stations[index]));
                     },
-                    child: InkWell(
-                      child: StationTile(
-                        key: Key(item.location),
-                        item: item,
-                      ),
-                      onTap: () {
-                        context
-                            .read<StationBloc>()
-                            .add(SelectStation(stations[index]));
-                      },
-                    ),
                   );
                 },
                 separatorBuilder: (context, index) {

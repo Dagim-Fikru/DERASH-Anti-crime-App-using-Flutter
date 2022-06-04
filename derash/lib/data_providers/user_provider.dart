@@ -3,10 +3,7 @@ import 'package:derash/models/user.dart';
 
 abstract class UserProvider {
 
-  // Future<User> signUpUser(String username ,String email , String password);
-  // Future<User> signInUser(String  email , String password);
-  // Future<void> signOutUser(String token);
-  Future<List<User>> getAllUser();
-  Future<List<User>> updateUser(String id ,User user);
-  Future<String> deleteUser(String id );
+  Future<List<User>> getAllUser( String token);
+  Future<List<User>> updateUser(String id ,User user, String token);
+  Future<String> deleteUser(String id , String token);
 }

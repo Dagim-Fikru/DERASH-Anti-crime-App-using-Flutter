@@ -1,7 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../models/user.dart';
-import '../../../repository/user_repository.dart';
+import '../../../repository/user_reporitory.dart';
 
 part 'sign_up_event.dart';
 part 'sign_up_state.dart';
@@ -16,7 +16,7 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
           email: event.email,
           password: event.password);
       try {
-        final user = await repository.create(usertosave);
+        final user = await repository.register(usertosave);
         emit(HasAccount());
       } catch (error) {
         emit(SignUpFailed(error));

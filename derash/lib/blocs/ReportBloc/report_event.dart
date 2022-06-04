@@ -10,13 +10,15 @@ abstract class ReportEvent extends Equatable {
 }
 
 class getLocation extends ReportEvent {
-  const getLocation();
+  final User user ;
+  const getLocation(this.user);
 }
 
 class submitReport extends ReportEvent {
+  final User user;
   final Report report;
 
-  const submitReport(this.report);
+  const submitReport(this.report , this.user);
 }
 
 class getHistory extends ReportEvent {

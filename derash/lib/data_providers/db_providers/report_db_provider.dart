@@ -13,7 +13,7 @@ class ReportDBProvider implements ReportProvider {
   static final ReportDBProvider db = ReportDBProvider._();
 
   ReportDBProvider._();
-
+  ReportDBProvider();
   Future<Database?> get database async {
     // If database exists, return database
     if (_database != null) {
@@ -59,34 +59,34 @@ class ReportDBProvider implements ReportProvider {
     });
   }
 
-  Future<List<Report>> insertReports(List<Report> reports) async {
+  Future<List<Report>> insertReports(List<Report> reports ,String token) async {
     try {
       final db = await database;
       for (final report in reports) {
         await db?.insert('Report', report.toJson());
       }
-      final allReports = getReports();
+      final allReports = getReports(token);
       return allReports;
     } catch (e) {
       throw Exception("inserting report field");
     }
   }
 
-  Future<List<Stats>> insertStats(List<Stats> stats) async {
+  Future<List<Stats>> insertStats(List<Stats> stats,String token) async {
     try {
       final db = await database;
       for (final stat in stats) {
         final res = await db?.insert('Report', stat.toJson());
       }
 
-      return getStatReport();
+      return getStatReport(token);
     } catch (e) {
       throw Exception("inserting report field");
     }
   }
 
   @override
-  Future<List<Report>> getReports() async {
+  Future<List<Report>> getReports(String token) async {
     try {
       final db = await database;
       final res = await db?.rawQuery("SELECT * FROM Report");
@@ -101,7 +101,7 @@ class ReportDBProvider implements ReportProvider {
   }
 
   @override
-  Future<List<Stats>> getStatReport() async {
+  Future<List<Stats>> getStatReport(String token) async {
     try {
       final db = await database;
       final res = await db?.rawQuery("SELECT * FROM Stats");
@@ -115,7 +115,7 @@ class ReportDBProvider implements ReportProvider {
   }
 
   @override
-  Future<List<Report>> getUserReport(String id) async {
+  Future<List<Report>> getUserReport(String id,String token) async {
     try {
       final db = await database;
       final res = await db?.rawQuery("SELECT * FROM Report WHERE id = $id");

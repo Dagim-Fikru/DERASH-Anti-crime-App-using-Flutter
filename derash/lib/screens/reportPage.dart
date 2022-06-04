@@ -24,7 +24,12 @@ class ReportScreen extends StatefulWidget {
 class _ReportScreenState extends State<ReportScreen> {
   @override
   void didChangeDependencies() {
-    context.read<ReportBloc>().add(getLocation());
+    final loginstate = BlocProvider.of<LoginBloc>(context, listen: true).state;
+    late User user;
+    if(loginstate is Authenticated){
+      user =loginstate.user;
+    }
+    context.read<ReportBloc>().add(getLocation(user));
     super.didChangeDependencies();
   }
 
@@ -218,6 +223,11 @@ class _ReportScreenState extends State<ReportScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final loginstate = BlocProvider.of<LoginBloc>(context, listen: true).state;
+    late User user;
+    if(loginstate is Authenticated){
+      user =loginstate.user;
+    }
     return BlocBuilder<ReportBloc, ReportState>(
       builder: (context, state) {
         if (state is ReportInitial) {
@@ -229,9 +239,9 @@ class _ReportScreenState extends State<ReportScreen> {
           return Center(
             child: ElevatedButton(
                 onPressed: () {
-                  context.read<ReportBloc>().add(getLocation());
+                  context.read<ReportBloc>().add(getLocation(user));
                 },
-                child: Text('Retry')),
+                child: Text(' please Retry')),
           );
         }
         if (state is ReportLoaded)

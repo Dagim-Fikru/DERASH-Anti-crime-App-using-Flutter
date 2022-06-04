@@ -10,7 +10,7 @@ import '../user_provider.dart';
 class UserDBProvider implements UserProvider {
   static Database? _database;
   static final UserDBProvider db = UserDBProvider._();
-
+UserDBProvider();
   UserDBProvider._();
 
   Future<Database?> get database async {
@@ -55,7 +55,7 @@ class UserDBProvider implements UserProvider {
   }
 
   @override
-  Future<String> deleteUser(String id) async {
+  Future<String> deleteUser(String id, String token) async {
     try {
       final db = await database;
       await db?.delete("User", where: 'id = ?', whereArgs: [id]);
@@ -69,12 +69,12 @@ class UserDBProvider implements UserProvider {
 
 
   @override
-  Future<List<User>> updateUser(String id, User user) async {
+  Future<List<User>> updateUser(String id, User user, String token) async {
     try {
       final db = await database;
       await db?.rawUpdate(
           "UPDATE User SET username =  ${user.username} , email = ${user.email} , password = ${user.password} ,token = ${user.token}WHERE id = ${user.id}");
-      final users = getAllUser();
+      final users = getAllUser(token);
       return users;
     } catch (e) {
       throw Exception("updating user Field");
@@ -82,7 +82,7 @@ class UserDBProvider implements UserProvider {
   }
   
   @override
-  Future<List<User>> getAllUser() async{
+  Future<List<User>> getAllUser( String token) async{
       try {
       final db = await database;
       final res = await db?.rawQuery("SELECT * FROM User ");

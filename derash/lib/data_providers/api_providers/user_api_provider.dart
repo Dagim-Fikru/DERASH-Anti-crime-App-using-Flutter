@@ -7,12 +7,10 @@ import 'package:derash/models/user.dart';
 
 class UserApiDataProvider implements UserProvider {
   static const String _baseUrl = "http://localhost:5000/api/user/";
-  final String token;
 
-  UserApiDataProvider(this.token);
   
   @override
-  Future<String> deleteUser(String id) async {
+  Future<String> deleteUser(String id ,String token) async {
     final response = await http
         .delete(Uri.parse("$_baseUrl/$id"), headers: {"token": token});
 
@@ -24,7 +22,7 @@ class UserApiDataProvider implements UserProvider {
   }
 
   @override
-  Future<List<User>> getAllUser() async {
+  Future<List<User>> getAllUser( String token) async {
     final response =
         await http.get(Uri.parse(_baseUrl), headers: {"token": token});
 
@@ -41,7 +39,7 @@ class UserApiDataProvider implements UserProvider {
 
   
   @override
-  Future<List<User>> updateUser(String id, User user)async {
+  Future<List<User>> updateUser(String id, User user,  String token)async {
   final response = await http.put(Uri.parse("$_baseUrl/$id"),
       headers: {"token": token},
       body: jsonEncode({

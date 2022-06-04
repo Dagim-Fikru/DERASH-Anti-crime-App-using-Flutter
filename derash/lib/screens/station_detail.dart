@@ -1,8 +1,10 @@
 import 'package:derash/blocs/stationbloc/station_bloc.dart';
+import 'package:derash/models/user.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
+import '../blocs/auth/login_bloc/login_bloc.dart';
 import '../blocs/userbloc/user_bloc.dart';
 import '../models/station.dart';
 
@@ -20,13 +22,18 @@ class StationDetailScreen extends StatefulWidget {
 class _StationDetailScreenState extends State<StationDetailScreen> {
   @override
   Widget build(BuildContext context) {
+    final loginstate = BlocProvider.of<LoginBloc>(context, listen: true).state;
+    late User user;
+    if(loginstate is Authenticated){
+      user =loginstate.user;
+    }
     return Scaffold(
       appBar: AppBar(
         title: Text('Station Details'),
         leading: IconButton(
           icon: const Icon(Icons.close),
           onPressed: () {
-            context.read<StationBloc>().add(LoadStations());
+            context.read<StationBloc>().add(LoadStations(user));
           },
         ),
       ),
@@ -37,7 +44,7 @@ class _StationDetailScreenState extends State<StationDetailScreen> {
             const SizedBox(height: 16.0),
             buildProfile(),
             Expanded(
-              child: buildMenu(),
+              child: buildMenu(user),
             )
           ],
         ),
@@ -45,7 +52,7 @@ class _StationDetailScreenState extends State<StationDetailScreen> {
     );
   }
 
-  Widget buildMenu() {
+  Widget buildMenu(User user) {
     return ListView(
       children: [
         const Card(
@@ -62,7 +69,7 @@ class _StationDetailScreenState extends State<StationDetailScreen> {
         ),
         ListTile(
           title: const Text('Location'),
-          subtitle: Text(widget.station.location),
+          subtitle: Text(widget.station.stationlocation),
           trailing: TextButton(
             child: Text('Edit'),
             onPressed: () {
@@ -72,7 +79,7 @@ class _StationDetailScreenState extends State<StationDetailScreen> {
         ),
         ListTile(
           title: const Text('Email'),
-          subtitle: Text(widget.station.email),
+          subtitle: Text(widget.station.stationemail),
           trailing: TextButton(
             child: Text('Edit'),
             onPressed: () {
@@ -100,7 +107,7 @@ class _StationDetailScreenState extends State<StationDetailScreen> {
         ListTile(
           title: const Text('Remove', style: TextStyle(color: Colors.red)),
           onTap: () {
-            context.read<StationBloc>().add(DeleteStation(widget.station.id));
+            context.read<StationBloc>().add(DeleteStation(widget.station.id!,user));
           },
         ),
       ],

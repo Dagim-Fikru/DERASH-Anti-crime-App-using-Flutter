@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../blocs/auth/login_bloc/login_bloc.dart';
 import '../blocs/userbloc/user_bloc.dart';
 
 import '../models/user.dart';
@@ -15,12 +16,22 @@ class UsersScreen extends StatefulWidget {
 class _UsersScreenState extends State<UsersScreen> {
   @override
   void didChangeDependencies() {
-    context.read<UserBloc>().add(const LoadUsers());
+    final loginstate = BlocProvider.of<LoginBloc>(context, listen: true).state;
+    late User user;
+    if(loginstate is Authenticated){
+      user =loginstate.user;
+    }
+    context.read<UserBloc>().add(LoadUsers(user));
     super.didChangeDependencies();
   }
 
   @override
   Widget build(BuildContext context) {
+    final loginstate = BlocProvider.of<LoginBloc>(context, listen: true).state;
+    late User user;
+    if(loginstate is Authenticated){
+      user =loginstate.user;
+    }
     return BlocBuilder<UserBloc, UserState>(
       builder: (context, state) {
         if (state is UserLoading) {
@@ -43,7 +54,7 @@ class _UsersScreenState extends State<UsersScreen> {
             ElevatedButton(
               child: const Text('Retry'),
               onPressed: () {
-                context.read<UserBloc>().add(const LoadUsers());
+                context.read<UserBloc>().add(LoadUsers(user));
               },
             ),
           ]));

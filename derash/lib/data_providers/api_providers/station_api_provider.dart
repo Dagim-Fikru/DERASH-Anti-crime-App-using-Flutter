@@ -8,17 +8,13 @@ import 'package:http/http.dart' as http;
 
 class StationApiDataProvider implements StationProvider {
   static const String _baseUrl = "http://localhost:5000/api/station/";
-  final String token;
-  StationApiDataProvider(
-    this.token
-  );
+
   @override
-  Future<List<Station>> addStation(Station station ) async{
+  Future<List<Station>> addStation(Station station,String token ) async{
     final http.Response response =
         await http.post(Uri.parse("$_baseUrl/register"),
             headers: {"token": token},
             body: jsonEncode({
-              "stationname": station.stationame,
               "stationemail": station.stationemail,
               "stationlocation": station.stationlocation,
             }));
@@ -36,7 +32,7 @@ class StationApiDataProvider implements StationProvider {
   }
   
   @override
-  Future<String> deleteStation(String id ) async{
+  Future<String> deleteStation(String id ,String token) async{
     final response = await http
         .delete(Uri.parse("$_baseUrl/$id"), headers: {"token": token});
 
@@ -48,7 +44,8 @@ class StationApiDataProvider implements StationProvider {
   }
   
   @override
-  Future<List<Station>> getAllStations() async{
+  Future<List<Station>> getAllStations(String token) async{
+    print("data from api is loading");
     final response =
         await http.get(Uri.parse(_baseUrl), headers: {"token": token});
 
@@ -57,6 +54,7 @@ class StationApiDataProvider implements StationProvider {
       stations = (jsonDecode(response.body) as List)
           .map((e) => Station.fromJson(e))
           .toList();
+          print("stations"+ stations.toString());
       return stations;
     } else {
       throw Exception("Fetching station  failed");
@@ -64,11 +62,10 @@ class StationApiDataProvider implements StationProvider {
   }
   
   @override
-  Future<List<Station>> updateStation(String id, Station station) async{
+  Future<List<Station>> updateStation(String id, Station station,String token) async{
     final response = await http.put(Uri.parse("$_baseUrl/$id"),
         headers: {"token": token},
         body: jsonEncode({
-          "stationname": station.stationame,
           "stationemail": station.stationemail,
           "stationlocation": station.stationlocation,
         }));
