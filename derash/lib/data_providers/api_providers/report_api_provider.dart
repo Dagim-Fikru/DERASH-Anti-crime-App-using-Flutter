@@ -10,7 +10,7 @@ import 'package:derash/models/stats.dart';
 // import 'package:derash/models/user.dart';
 
 class ReportApiDataProvider implements ReportProvider {
-  static const String _baseUrl = "http://localhost:5000/api/station/";
+  static const String _baseUrl = "http://10.0.2.2:5000/api/station/";
 
   @override
   Future<List<Report>> getReports(String token)async {

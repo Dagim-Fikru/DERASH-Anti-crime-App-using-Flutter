@@ -18,15 +18,31 @@ class StationRepository {
 
 // get stations
   Future<List<Station>> getStations(String token) async {
-    print("get location is about to huppen");
+    // print("get location is about to huppen");
+
+    // final stationsFromApi = await stationApiDataProvider.getAllStations(token);
+    // if (stationsFromApi.isNotEmpty) {
+    //   print("station from api");
+    //   await dbProvider.addStations(stationsFromApi, token);
+    //   return stationsFromApi;
+    // }
+    // print("stations from local");
+    // final stations = await dbProvider.getAllStations(token);
+    //   return stations;
+
     final stations = await dbProvider.getAllStations(token);
     if (stations.isNotEmpty) {
       print("from local");
+      print("station already exist");
+      print(stations.length);
       return stations;
     }
     print("degsew methid");
     final stationsFromApi = await stationApiDataProvider.getAllStations(token);
-print("get stations is done");
+    print("get stations is done");
+    print("station not  exist before");
+
+    print(stations);
     await dbProvider.addStations(stationsFromApi, token);
     return stationsFromApi;
   }

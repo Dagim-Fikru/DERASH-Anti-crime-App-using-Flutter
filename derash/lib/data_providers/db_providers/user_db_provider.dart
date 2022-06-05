@@ -10,12 +10,29 @@ import '../user_provider.dart';
 class UserDBProvider implements UserProvider {
   static Database? _database;
   static final UserDBProvider db = UserDBProvider._();
-UserDBProvider();
+  UserDBProvider();
   UserDBProvider._();
 
+  static const user = 'user';
+  static const id = 'id';
+  static const username = 'username';
+  static const email = 'email';
+  static const password = 'password';
+  static const token = 'token';
   Future<Database?> get database async {
     // If database exists, return database
-    if (_database != null) return _database;
+    if (_database != null) {
+      await _database?.execute('''CREATE TABLE IF NOT EXISTS $user(
+              $id TEXT PRIMARY KEY,
+              $username TEXT NOT NULL,
+              $email TEXT NOT NULL UNIQUE,
+              $password TEXT NOT NULL,
+          $token TEXT
+
+              )
+              ''');
+      return _database;
+    }
 
     // If database don't exists, create one
     _database = await initDB();
@@ -30,13 +47,15 @@ UserDBProvider();
 
     return await openDatabase(path, version: 1, onOpen: (db) {},
         onCreate: (Database db, int version) async {
-      await db.execute('CREATE TABLE User('
-          'id TEXT PRIMARY KEY,'
-          'username TEXT NOT NULL,'
-          'email TEXT NOT NULL UNIQUE,'
-          'password TEXT NOT NULL ,'
-          'token TEXT ,'
-          ')');
+      await db.execute('''CREATE TABLE IF NOT EXISTS $user(
+              $id TEXT PRIMARY KEY,
+              $username TEXT NOT NULL,
+              $email TEXT NOT NULL UNIQUE,
+              $password TEXT NOT NULL,
+          $token TEXT
+
+              )
+              ''');
     });
   }
 
@@ -45,8 +64,7 @@ UserDBProvider();
       final db = await database;
       // final batch = db?.batch();
       for (final user in users) {
-        final res = await db?.insert('Report', user.toJson());
-        
+        final res = await db?.insert('user', user.toJson());
       }
       // return res;
     } catch (e) {
@@ -58,7 +76,7 @@ UserDBProvider();
   Future<String> deleteUser(String id, String token) async {
     try {
       final db = await database;
-      await db?.delete("User", where: 'id = ?', whereArgs: [id]);
+      await db?.delete("user", where: 'id = ?', whereArgs: [id]);
       const message = 'user deleted seccesful';
       return message;
     } catch (e) {
@@ -66,26 +84,24 @@ UserDBProvider();
     }
   }
 
-
-
   @override
   Future<List<User>> updateUser(String id, User user, String token) async {
     try {
       final db = await database;
       await db?.rawUpdate(
-          "UPDATE User SET username =  ${user.username} , email = ${user.email} , password = ${user.password} ,token = ${user.token}WHERE id = ${user.id}");
+          "UPDATE user SET username =  ${user.username} , email = ${user.email} , password = ${user.password} ,token = ${user.token}WHERE id = ${user.id}");
       final users = getAllUser(token);
       return users;
     } catch (e) {
       throw Exception("updating user Field");
     }
   }
-  
+
   @override
-  Future<List<User>> getAllUser( String token) async{
-      try {
+  Future<List<User>> getAllUser(String token) async {
+    try {
       final db = await database;
-      final res = await db?.rawQuery("SELECT * FROM User ");
+      final res = await db?.rawQuery("SELECT * FROM user ");
 
       List<User> list =
           res!.isNotEmpty ? res.map((c) => User.fromJson(c)).toList() : [];

@@ -5,11 +5,10 @@ import 'package:http/http.dart' as http;
 import 'package:derash/models/user.dart';
 
 class UserAuthApiDataProvider {
-  static const String _baseUrl = "http://localhost:5000/api/auth/";
+  static const String _baseUrl = "http://10.0.2.2:5000/api/auth/";
 //register
   Future<User> signUpUser(User user) async {
-    
-        final http.Response response =
+    final http.Response response =
         await http.post(Uri.parse("$_baseUrl/register"),
             headers: <String, String>{"Content-Type": "application/json"},
             body: jsonEncode({
@@ -27,16 +26,20 @@ class UserAuthApiDataProvider {
   }
 
 //login
-  Future<User> signInUser(String  email , String password) async {
+  Future<User> signInUser(String email, String password) async {
     print("user is about to loggin");
-    print("email" + email );
-    print("password" + password );
+    print("email" + email);
+    print("password" + password);
+    // try {
     final http.Response response = await http.post(Uri.parse("$_baseUrl/login"),
         headers: <String, String>{"Content-Type": "application/json"},
         body: jsonEncode({
           "email": email,
-          "password":password,
+          "password": password,
         }));
+
+    print("after reposnse");
+    print("response" + response.body);
 
     if (response.statusCode == 200) {
       // print(User.fromJson(jsonDecode(response.body)));
@@ -45,9 +48,15 @@ class UserAuthApiDataProvider {
       print(jsonDecode(response.body));
       return User.fromJson(jsonDecode(response.body));
     }
-    {
-      throw Exception("Failed to login user");
-    }
+    // {
+    throw Exception("Failed to login user");
+    // }
+
+    // } catch (e) {
+    //   print("eroor "+ e.toString());
+
+    // }
+    //        throw Exception("Failed to login user");
   }
 
   // login out

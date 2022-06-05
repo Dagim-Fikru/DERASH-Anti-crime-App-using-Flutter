@@ -12,9 +12,11 @@ import 'package:image_picker/image_picker.dart';
 
 import 'package:derash/blocs/ReportBloc/report_bloc.dart';
 
+import '../models/station.dart';
 import '../models/user.dart';
 
 class ReportScreen extends StatefulWidget {
+ 
   const ReportScreen({Key? key}) : super(key: key);
 
   @override
@@ -22,12 +24,15 @@ class ReportScreen extends StatefulWidget {
 }
 
 class _ReportScreenState extends State<ReportScreen> {
+  
+
+ 
   @override
   void didChangeDependencies() {
     final loginstate = BlocProvider.of<LoginBloc>(context, listen: true).state;
     late User user;
-    if (loginstate is Authenticated) {
-      user = loginstate.user;
+    if(loginstate is Authenticated){
+      user =loginstate.user;
     }
     context.read<ReportBloc>().add(getLocation(user));
     super.didChangeDependencies();
@@ -52,8 +57,11 @@ class _ReportScreenState extends State<ReportScreen> {
   final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
   DateTime dateTime = DateTime(2022, 05, 27);
 
-  Widget _buildLocationField() {
-    List<String> locations = ['4kilo', 'Bole', 'Piassa', '5kilo', 'Megenagna'];
+  Widget _buildLocationField(List<Station> stations, BuildContext context) {
+    List<String> locations =[];
+    for(var station in stations){
+      locations.add(station.stationlocation);
+    }
     String? selectedLocation;
     return DropdownButtonFormField<String>(
       decoration: InputDecoration(
@@ -223,10 +231,11 @@ class _ReportScreenState extends State<ReportScreen> {
 
   @override
   Widget build(BuildContext context) {
+    
     final loginstate = BlocProvider.of<LoginBloc>(context, listen: true).state;
     late User user;
-    if (loginstate is Authenticated) {
-      user = loginstate.user;
+    if(loginstate is Authenticated){
+      user =loginstate.user;
     }
     return BlocBuilder<ReportBloc, ReportState>(
       builder: (context, state) {
@@ -245,8 +254,10 @@ class _ReportScreenState extends State<ReportScreen> {
           );
         }
         if (state is ReportLoaded)
+
         // else
         {
+          final stations=state.stations;
           return Scaffold(
             appBar: AppBar(
               title: Text('Report page'),
@@ -261,7 +272,7 @@ class _ReportScreenState extends State<ReportScreen> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: <Widget>[
-                    _buildLocationField(),
+                    _buildLocationField(stations,context),
                     _buildDateField(),
                     _buildFileUpload(),
                     _buildIncidentField(),
@@ -280,7 +291,7 @@ class _ReportScreenState extends State<ReportScreen> {
                         _formkey.currentState?.save();
                       },
                       child: Text(
-                        'Submit',
+                        'Submit ${stations.length}',
                         style: TextStyle(
                             color: Color.fromARGB(255, 255, 255, 255),
                             fontSize: 20,
