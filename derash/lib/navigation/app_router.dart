@@ -1,8 +1,11 @@
 import 'package:derash/blocs/ReportBloc/report_bloc.dart';
 import 'package:derash/blocs/auth/login_bloc/login_bloc.dart';
+import 'package:derash/blocs/welcome_bloc/welcome_bloc.dart';
 import 'package:derash/models/user.dart';
 import 'package:derash/screens/admin_screen.dart';
+import 'package:derash/screens/profile_screen.dart';
 import 'package:derash/screens/report_history.dart';
+import 'package:derash/screens/splash_screen.dart';
 import 'package:derash/screens/user_details.dart';
 import 'package:derash/screens/reportPage.dart';
 import 'package:derash/screens/signup.dart';
@@ -36,15 +39,30 @@ class AppRouter extends RouterDelegate
     final loginstate = BlocProvider.of<LoginBloc>(context, listen: true).state;
     final reportstate =
         BlocProvider.of<ReportBloc>(context, listen: true).state;
+      final Welcomstate =
+        BlocProvider.of<WelcomeBloc>(context, listen: true).state;
 
     return Navigator(
       key: navigatorKey,
       pages: [
-        if (signstate is HasAccount && loginstate is Unauthenticated)
+        if(Welcomstate is Uninitialized )
+         MaterialPage(
+              name: "splash",
+              key: const ValueKey("splash"),
+              child: SplashScreen()),
+        if ((signstate is HasAccount && loginstate is Unauthenticated && Welcomstate is Initialized  ) || (loginstate is LogingFailed
+        
+        ))
           MaterialPage(
               name: "loginscreen",
               key: const ValueKey("loginscreen"),
               child: LoginScreen()),
+
+        // if(loginstate is LogingFailed)
+        // MaterialPage(
+        //       name: "loginscreen",
+        //       key: const ValueKey("loginscreen"),
+        //       child: LoginScreen()),
         if (signstate is HasNoAccount)
           const MaterialPage(
               name: "signupscreen",
@@ -60,11 +78,11 @@ class AppRouter extends RouterDelegate
               name: "reporthistory",
               key: const ValueKey("reporthistory"),
               child: ReportHistoryScreen(reports: reportstate.reports)),
-        if (reportstate is historyLoaded)
-          MaterialPage(
-              name: "profilescreen",
-              key: const ValueKey("profilescreen"),
-              child: ReportHistoryScreen(reports: reportstate.reports)),
+        // if (reportstate is ProfileUpdating)
+        //   MaterialPage(
+        //       name: "profilescreen",
+        //       key: const ValueKey("profilescreen"),
+        //       child: ProfileScreen(report_state.user)),
         if (loginstate is Authenticated && loginstate.user.isAdmin!)
           const MaterialPage(
               name: "adminscreen",
