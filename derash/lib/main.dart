@@ -13,6 +13,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'blocs/ReportBloc/report_bloc.dart';
 import 'blocs/auth/login_bloc/login_bloc.dart';
 import 'blocs/userbloc/user_bloc.dart';
+import 'blocs/welcome_bloc/welcome_bloc.dart';
 import 'navigation/app_router.dart';
 import 'repository/station_repository.dart';
 import 'repository/user_reporitory.dart';
@@ -58,7 +59,9 @@ class _MyAppState extends State<MyApp> {
               create: (context) => LoginBloc(_userRepository)),
           BlocProvider<ReportBloc>(
               create: (context) => ReportBloc(
-                  _userRepository, _reportRepository, _stationRepository))
+                  _userRepository, _reportRepository, _stationRepository)),
+                   BlocProvider<WelcomeBloc>(
+              create: (context) => WelcomeBloc())
         ],
         child: MaterialApp(
           theme: ThemeData.light(),
