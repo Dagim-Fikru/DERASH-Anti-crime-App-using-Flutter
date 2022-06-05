@@ -3,7 +3,6 @@ import 'package:derash/models/stats.dart';
 
 import '../data_providers/api_providers/report_api_provider.dart';
 import '../data_providers/db_providers/report_db_provider.dart';
-import '../data_providers/db_providers/report_db_stats.dart';
 
 class ReportRepository {
   final ReportApiDataProvider reportApiDataProvider = ReportApiDataProvider();

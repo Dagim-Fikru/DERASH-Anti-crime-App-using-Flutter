@@ -7,7 +7,7 @@ import 'package:http/http.dart' as http;
 // import 'package:derash/models/user.dart';
 
 class StationApiDataProvider implements StationProvider {
-  static const String _baseUrl = "http://localhost:5000/api/station/";
+  static const String _baseUrl = "http://10.0.2.2:5000/api/station/";
 
   @override
   Future<List<Station>> addStation(Station station,String token ) async{
@@ -45,7 +45,7 @@ class StationApiDataProvider implements StationProvider {
   
   @override
   Future<List<Station>> getAllStations(String token) async{
-    print("data from api is loading");
+
     final response =
         await http.get(Uri.parse(_baseUrl), headers: {"token": token});
 
@@ -54,7 +54,7 @@ class StationApiDataProvider implements StationProvider {
       stations = (jsonDecode(response.body) as List)
           .map((e) => Station.fromJson(e))
           .toList();
-          print("stations"+ stations.toString());
+        
       return stations;
     } else {
       throw Exception("Fetching station  failed");

@@ -11,61 +11,62 @@ class StationDBProvider implements StationProvider {
   static Database? _database;
   static final StationDBProvider db = StationDBProvider._();
 
+  static final station = 'station';
+  static final id = 'id';
+  static final stationemail = 'stationemail';
+  static final stationlocation = 'stationlocation';
   StationDBProvider._();
   StationDBProvider();
 
-  Future<Database?> database() async {
+  Future<Database?>  get database async {
     // If database exists, return database
     if (_database != null) {
-      await _database?.execute('CREATE TABLE Station('
-          'id TEXT PRIMARY KEY,'
-          'stationemail TEXT UNIQUE NOT NULL,'
-          'stationlocation TEXT NOT NULL,'
-          ')');
+      print("database does exsit");
+      await _database?.execute('''CREATE TABLE IF NOT EXISTS $station(
+              $id TEXT PRIMARY KEY,
+              $stationemail TEXT UNIQUE NOT NULL,
+              $stationlocation TEXT NOT NULL
+              )
+              ''');
       return _database;
     }
 
     // If database don't exists, create one
+
     _database = await initDB();
+
 
     return _database;
   }
 
   // Create the database and the Employee table
   Future<Database?> initDB() async {
-    print('something happened here');
-    try {
-      // Directory documentsDirectory = await getApplicationDocumentsDirectory();
-
-      // String path1 = await getDatabasesPath();
-      if (kIsWeb) {
-        // Set web-specific directory Here
-      } else {
+  
         Directory appDocDir = await getApplicationDocumentsDirectory();
         String appDocPath = appDocDir.path;
-        print("after path");
+       
         final path = join(appDocPath, 'derash-android.db');
 
-      return openDatabase(path, version: 1, onCreate: (db, version) async {
-        await db.execute(
-            "CREATE TABLE Station(id TEXT PRIMARY KEY,stationemail TEXT UNIQUE NOT NULL,stationlocation TEXT NOT NULL,)");
-      });
+        return openDatabase(path, version: 1, onCreate: (db, version) async {
+          await db.execute('''CREATE TABLE IF NOT EXISTS $station(
+              $id TEXT PRIMARY KEY,
+              $stationemail TEXT UNIQUE NOT NULL,
+              $stationlocation TEXT NOT NULL
+              )
+              ''');
+        });
       }
-    } catch (e) {
-      print(e);
-      throw Exception("a");
-    }
+   
     // return null;
-  }
+  
 
-  Future<List<Station>> addStations(
+  Future<void> addStations(
       List<Station> stations, String token) async {
     try {
-      final db = await database();
+      final db = await database;
       for (final station in stations) {
-        final res = await db?.insert('Station', station.toJson());
+        final res = await db?.insert('station', station.toJson());
       }
-      return getAllStations(token);
     } catch (e) {
       throw Exception("adding station field");
     }
@@ -80,8 +81,8 @@ class StationDBProvider implements StationProvider {
   @override
   Future<String> deleteStation(String id, String token) async {
     try {
-      final db = await database();
-      await db?.delete("Station", where: 'id = ?', whereArgs: [id]);
+      final db = await database;
+      await db?.delete("station", where: 'id = ?', whereArgs: [id]);
       const message = 'Station deleted succefful';
       return message;
     } catch (e) {
@@ -91,17 +92,15 @@ class StationDBProvider implements StationProvider {
 
   @override
   Future<List<Station>> getAllStations(String token) async {
-    print("in the database");
 
     try {
-      print("before database");
-      final db = await database();
-      print("after databasee");
-      final res = await db?.rawQuery("SELECT * FROM Station ");
+     
+      final db = await database;
+      
+      final res = await db?.rawQuery("SELECT * FROM station ");
 
       List<Station> list =
           res!.isNotEmpty ? res.map((c) => Station.fromJson(c)).toList() : [];
-      print("databse return " + list.toString());
       return list;
     } catch (e) {
       throw Exception("getting all station field");
@@ -112,9 +111,9 @@ class StationDBProvider implements StationProvider {
   Future<List<Station>> updateStation(
       String id, Station station, String token) async {
     try {
-      final db = await database();
+      final db = await database;
       final res = await db?.rawUpdate(
-          "UPDATE Customer SET  stationemail = ${station.stationemail} , stationlocation = ${station.stationlocation} WHERE id = ${id}");
+          "UPDATE station SET  stationemail = ${station.stationemail} , stationlocation = ${station.stationlocation} WHERE id = ${id}");
       final stations = getAllStations(token);
       return stations;
     } catch (e) {
