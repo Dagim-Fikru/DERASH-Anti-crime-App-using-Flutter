@@ -35,7 +35,7 @@ packages:
       name: async
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.8.2"
+    version: "2.9.0"
   bloc:
     dependency: transitive
     description:
@@ -458,6 +458,7 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.8.1"
+
   path_provider:
     dependency: "direct main"
     description:
@@ -610,6 +611,7 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.8.2"
+
   sqflite:
     dependency: "direct main"
     description:
@@ -694,6 +696,7 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.4.9"
+
   test_core:
     dependency: transitive
     description:
@@ -722,6 +725,9 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.1.2"
+
+sdks:
+  dart: ">=2.17.0-0 <3.0.0"
   vm_service:
     dependency: transitive
     description:
